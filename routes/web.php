@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use ChrisReedIO\Socialment\Controllers\OAuthController;
+use Illuminate\Support\Facades\Route;
 
 // Route::get('/socialment/azure', function () {
 // 	return 'Azure';

@@ -31,7 +31,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
          */
         $package->name(static::$name)
             // ->hasCommands($this->getCommands())
-			->hasRoute('web')
+            ->hasRoute('web')
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()

@@ -10,10 +10,10 @@ use Illuminate\View\View;
 
 class SocialmentPlugin implements Plugin
 {
-	use EvaluatesClosures;
+    use EvaluatesClosures;
 
-	public bool | Closure | null $visible = null;
-	
+    public bool | Closure | null $visible = null;
+
     public function getId(): string
     {
         return 'socialment';
@@ -28,11 +28,11 @@ class SocialmentPlugin implements Plugin
 
             return View::make('socialment::providers-list', [
                 'providers' => [
-					'azure' => [
-						'icon' => 'azure',
-						'label' => 'Azure',
-					]
-				]
+                    'azure' => [
+                        'icon' => 'azure',
+                        'label' => 'Azure',
+                    ],
+                ],
             ]);
         });
     }
@@ -55,7 +55,7 @@ class SocialmentPlugin implements Plugin
         return $plugin;
     }
 
-	public function visible(bool | Closure $visible): static
+    public function visible(bool | Closure $visible): static
     {
         $this->visible = $visible;
 

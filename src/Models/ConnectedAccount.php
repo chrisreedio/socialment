@@ -8,26 +8,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ConnectedAccount extends Model
 {
-	protected $fillable = [
-		'provider',
-		'provider_user_id',
-		'name',
-		'nickname',
-		'email',
-		'phone',
-		'avatar',
-		'token',
-		'refresh_token',
-		'expires_at',
-	];
+    protected $fillable = [
+        'provider',
+        'provider_user_id',
+        'name',
+        'nickname',
+        'email',
+        'phone',
+        'avatar',
+        'token',
+        'refresh_token',
+        'expires_at',
+    ];
 
-	public function user(): BelongsTo
-	{
-		return $this->belongsTo(User::class);
-	}
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
-	public function scopeProvider(Builder $query, string $provider): Builder
-	{
-		return $query->where('provider', $provider);
-	}
+    public function scopeProvider(Builder $query, string $provider): Builder
+    {
+        return $query->where('provider', $provider);
+    }
 }
