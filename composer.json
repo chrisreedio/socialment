@@ -7,7 +7,7 @@
 		"filament",
         "socialment",
 		"authentication",
-		"socialite",
+		"socialite"
     ],
     "homepage": "https://github.com/chrisreedio/socialment",
     "support": {
@@ -25,8 +25,9 @@
     "require": {
         "php": "^8.1",
         "filament/filament": "^3.0",
-        "spatie/laravel-package-tools": "^1.15.0",
-        "illuminate/contracts": "^10.0"
+        "illuminate/contracts": "^10.0",
+        "laravel/socialite": "^5.8",
+        "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
         "laravel/pint": "^1.0",

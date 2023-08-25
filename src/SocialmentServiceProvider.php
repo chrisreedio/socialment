@@ -30,7 +30,8 @@ class SocialmentServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
-            ->hasCommands($this->getCommands())
+            // ->hasCommands($this->getCommands())
+			->hasRoute('web')
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()
@@ -129,10 +130,10 @@ class SocialmentServiceProvider extends PackageServiceProvider
     /**
      * @return array<string>
      */
-    protected function getRoutes(): array
-    {
-        return [];
-    }
+    // protected function getRoutes(): array
+    // {
+    //     return [];
+    // }
 
     /**
      * @return array<string, mixed>
@@ -148,7 +149,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_socialment_table',
+            'create_connected_accounts_table',
         ];
     }
 }
