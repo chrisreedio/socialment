@@ -1,15 +1,15 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace ChrisReedIO\Socialment;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
-class SkeletonPlugin implements Plugin
+class SocialmentPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'skeleton';
+        return 'socialment';
     }
 
     public function register(Panel $panel): void
