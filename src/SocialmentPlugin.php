@@ -46,9 +46,9 @@ class SocialmentPlugin implements Plugin
     {
         $plugin = app(static::class);
 
-		$plugin->visible = fn () => true;
+        $plugin->visible = fn () => true;
 
-		return $plugin;
+        return $plugin;
     }
 
     public static function get(): static
