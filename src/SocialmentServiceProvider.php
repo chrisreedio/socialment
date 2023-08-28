@@ -1,7 +1,9 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace ChrisReedIO\Socialment;
 
+use ChrisReedIO\Socialment\Commands\SocialmentCommand;
+use ChrisReedIO\Socialment\Testing\TestsSocialment;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
@@ -13,14 +15,12 @@ use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
-use VendorName\Skeleton\Testing\TestsSkeleton;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class SocialmentServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'skeleton';
+    public static string $name = 'socialment';
 
-    public static string $viewNamespace = 'skeleton';
+    public static string $viewNamespace = 'socialment';
 
     public function configurePackage(Package $package): void
     {
@@ -30,13 +30,14 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
-            ->hasCommands($this->getCommands())
+            // ->hasCommands($this->getCommands())
+            ->hasRoute('web')
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()
                     ->publishMigrations()
                     ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub(':vendor_slug/:package_slug');
+                    ->askToStarRepoOnGitHub('chrisreedio/socialment');
             });
 
         $configFileName = $package->shortName();
@@ -70,10 +71,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
             $this->getAssetPackageName()
         );
 
-        FilamentAsset::registerScriptData(
-            $this->getScriptData(),
-            $this->getAssetPackageName()
-        );
+        // FilamentAsset::registerScriptData(
+        //     $this->getScriptData(),
+        //     $this->getAssetPackageName()
+        // );
 
         // Icon Registration
         FilamentIcon::register($this->getIcons());
@@ -82,18 +83,18 @@ class SkeletonServiceProvider extends PackageServiceProvider
         if (app()->runningInConsole()) {
             foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
-                    $file->getRealPath() => base_path("stubs/skeleton/{$file->getFilename()}"),
-                ], 'skeleton-stubs');
+                    $file->getRealPath() => base_path("stubs/socialment/{$file->getFilename()}"),
+                ], 'socialment-stubs');
             }
         }
 
         // Testing
-        Testable::mixin(new TestsSkeleton());
+        Testable::mixin(new TestsSocialment());
     }
 
     protected function getAssetPackageName(): ?string
     {
-        return ':vendor_slug/:package_slug';
+        return 'chrisreedio/socialment';
     }
 
     /**
@@ -102,9 +103,9 @@ class SkeletonServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            // AlpineComponent::make('skeleton', __DIR__ . '/../resources/dist/components/skeleton.js'),
-            Css::make('skeleton-styles', __DIR__ . '/../resources/dist/skeleton.css'),
-            Js::make('skeleton-scripts', __DIR__ . '/../resources/dist/skeleton.js'),
+            // AlpineComponent::make('socialment', __DIR__ . '/../resources/dist/components/socialment.js'),
+            // Css::make('socialment-styles', __DIR__ . '/../resources/dist/socialment.css'),
+            // Js::make('socialment-scripts', __DIR__ . '/../resources/dist/socialment.js'),
         ];
     }
 
@@ -114,7 +115,7 @@ class SkeletonServiceProvider extends PackageServiceProvider
     protected function getCommands(): array
     {
         return [
-            SkeletonCommand::class,
+            SocialmentCommand::class,
         ];
     }
 
@@ -129,10 +130,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
     /**
      * @return array<string>
      */
-    protected function getRoutes(): array
-    {
-        return [];
-    }
+    // protected function getRoutes(): array
+    // {
+    //     return [];
+    // }
 
     /**
      * @return array<string, mixed>
@@ -148,7 +149,7 @@ class SkeletonServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_skeleton_table',
+            'create_connected_accounts_table',
         ];
     }
 }

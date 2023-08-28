@@ -1,19 +1,11 @@
-# :package_description
+# Providing SocialStream style functionality for Filament.
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/chrisreedio/socialment.svg?style=flat-square)](https://packagist.org/packages/chrisreedio/socialment)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/chrisreedio/socialment/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/chrisreedio/socialment/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/chrisreedio/socialment/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/chrisreedio/socialment/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/chrisreedio/socialment.svg?style=flat-square)](https://packagist.org/packages/chrisreedio/socialment)
 
-<!--delete-->
----
-This repo can be used to scaffold a Filament plugin. Follow these steps to get started:
 
-1. Press the "Use this template" button at the top of this repo to create a new repo with the contents of this skeleton.
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files.
-3. Make something great!
----
-<!--/delete-->
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 
@@ -22,40 +14,97 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 You can install the package via composer:
 
 ```bash
-composer require :vendor_slug/:package_slug
+composer require chrisreedio/socialment
 ```
 
-You can publish and run the migrations with:
+
+## Usage
+
+This package extends [Laravel Socialite](https://laravel.com/docs/master/socialite). Socialite currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, and Bitbucket out of the box.
+
+Refer to the [Socialite documentation](https://laravel.com/docs/master/socialite) for more information on how to configure your application to use these providers.
+
+Many other providers are available via the [Socialite Providers](https://socialiteproviders.com/) website. Refer to the documentation for each provider for information on how to configure your application to use them.
+
+### Demo
+
+For an example usage of this package, see [ChrisReedIO/Socialment-Demo](https://github.com/chrisreedio/socialment-demo).
+
+
+
+### Initial Setup
+
+After installation you should publish and run the migration(s) with:
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-migrations"
+php artisan vendor:publish --tag="socialment-migrations"
 php artisan migrate
 ```
 
-You can publish the config file with:
+Then publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-config"
+php artisan vendor:publish --tag="socialment-config"
 ```
 
-Optionally, you can publish the views using
+Configure the `socialment` config file to specify providers in the following format:
+
+```php
+return [
+    'providers' => [
+        'azure' => [
+        	'icon' => 'azure',
+        	'label' => 'Azure',
+        ]
+    ],
+];
+```
+
+This package also uses the [Blade Font Awesome package](https://github.com/owenvoke/blade-fontawesome) by [Owen Voke](https://github.com/owenvoke). Search for brand icons on the [Font Awesome Website](https://fontawesome.com/search?o=r&f=brands).
+
+### Panel Configuration
+
+Include this plugin in your panel configuration:
+
+```php
+$panel
+	->plugins([
+		// ... Other Plugins
+		\ChrisReedIO\Socialment\SocialmentPlugin::make(),
+	])
+```
+
+
+### Visibility Override
+
+By default, the plugin displays the configured providers at the bottom of the login form. 
+You can additionally override the visibility of the plugin by passing a boolean or closure to the `visible` method:
+
+```php
+use ChrisReedIO\BreakpointBadge\BreakpointBadgePlugin;
+
+$panel->plugins([
+    \ChrisReedIO\Socialment\SocialmentPlugin::make()
+        ->visible(fn () => false)
+]);
+```
+
+## Extras
+
+You may publish and customize the views using
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-views"
+php artisan vendor:publish --tag="socialment-views"
 ```
 
 This is the contents of the published config file:
 
 ```php
 return [
+    'providers' => [
+
+    ],
 ];
-```
-
-## Usage
-
-```php
-$variable = new VendorName\Skeleton();
-echo $variable->echoPhrase('Hello, VendorName!');
 ```
 
 ## Testing
@@ -78,7 +127,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Chris Reed](https://github.com/chrisreedio)
 - [All Contributors](../../contributors)
 
 ## License
