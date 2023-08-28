@@ -2,6 +2,7 @@
 
 namespace ChrisReedIO\Socialment\Controllers;
 
+use App\Models\User;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 // use App\Models\User;
 // use ChrisReedIO\Socialment\Models\ConnectedAccount;
@@ -46,19 +47,17 @@ class SocialmentController extends Controller
             'expires_at' => $tokenExpiration,
         ]);
 
-        dd($connectedAccount);
+        if (!$connectedAccount->exists) {
+			// create the user and save this connected account
+			$connectedAccount->user()->associate(User::create([
+				'name' => $socialUser->getName(),
+				'email' => $socialUser->getEmail(),
+				// 'phone' => $socialUser->get(),
+			]))->save();
+		}
+		
+		auth()->login($connectedAccount->user);
 
-        // if (!$connectedAccount->exists) {
-        // 	// create the user and save this connected account
-        // 	$connectedAccount->user()->associate(User::create([
-        // 		'name' => $socialUser->getName(),
-        // 		'email' => $socialUser->getEmail(),
-        // 		// 'phone' => $socialUser->get(),
-        // 	]))->save();
-        // }
-
-        // auth()->login($connectedAccount->user);
-
-        // return redirect()->route('filament.admin.pages.dashboard');
+		return redirect()->route('filament.admin.pages.dashboard');
     }
 }
