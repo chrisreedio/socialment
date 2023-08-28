@@ -2,7 +2,6 @@
 
 namespace ChrisReedIO\Socialment;
 
-use ChrisReedIO\Socialment\Commands\SocialmentCommand;
 use ChrisReedIO\Socialment\Testing\TestsSocialment;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
@@ -114,9 +113,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
      */
     protected function getCommands(): array
     {
-        return [
-            SocialmentCommand::class,
-        ];
+        return [];
     }
 
     /**

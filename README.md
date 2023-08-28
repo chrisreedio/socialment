@@ -40,6 +40,12 @@ For an example usage of this package, see [ChrisReedIO/Socialment-Demo](https://
 
 After installation you should publish and run the migration(s) with:
 
+{% warning %}
+
+This package requires that the `users` `password` field be nullable. If you have not already done so, you should update your `users` table migration to make this change.
+
+{% endwarning %}
+
 ```bash
 php artisan vendor:publish --tag="socialment-migrations"
 php artisan migrate
@@ -57,7 +63,7 @@ Configure the `socialment` config file to specify providers in the following for
 return [
     'providers' => [
         'azure' => [
-        	'icon' => 'azure',
+        	'icon' => 'fab-microsoft',
         	'label' => 'Azure',
         ]
     ],
@@ -87,8 +93,6 @@ By default, the plugin displays the configured providers at the bottom of the lo
 You can additionally override the visibility of the plugin by passing a boolean or closure to the `visible` method:
 
 ```php
-use ChrisReedIO\BreakpointBadge\BreakpointBadgePlugin;
-
 $panel->plugins([
     \ChrisReedIO\Socialment\SocialmentPlugin::make()
         ->visible(fn () => false)
