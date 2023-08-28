@@ -23,7 +23,7 @@ class SocialmentPlugin implements Plugin
     {
         $panel->renderHook('panels::auth.login.form.after', function () {
             if (! $this->evaluate($this->visible)) {
-                return 'NOT VISIBLE';
+                return '';
             }
 
             return View::make('socialment::providers-list', [
