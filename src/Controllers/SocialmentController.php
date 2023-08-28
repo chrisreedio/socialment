@@ -47,17 +47,17 @@ class SocialmentController extends Controller
             'expires_at' => $tokenExpiration,
         ]);
 
-        if (!$connectedAccount->exists) {
-			// create the user and save this connected account
-			$connectedAccount->user()->associate(User::create([
-				'name' => $socialUser->getName(),
-				'email' => $socialUser->getEmail(),
-				// 'phone' => $socialUser->get(),
-			]))->save();
-		}
-		
-		auth()->login($connectedAccount->user);
+        if (! $connectedAccount->exists) {
+            // create the user and save this connected account
+            $connectedAccount->user()->associate(User::create([
+                'name' => $socialUser->getName(),
+                'email' => $socialUser->getEmail(),
+                // 'phone' => $socialUser->get(),
+            ]))->save();
+        }
 
-		return redirect()->route('filament.admin.pages.dashboard');
+        auth()->login($connectedAccount->user);
+
+        return redirect()->route('filament.admin.pages.dashboard');
     }
 }

@@ -8,6 +8,6 @@ use Illuminate\Support\Facades\Route;
 // })->name('socialment.azure');
 
 Route::middleware(['web'])->group(function () {
-	Route::get('/login/{provider}', [SocialmentController::class, 'redirect'])->name('socialment.redirect');
-	Route::get('/login/{provider}/callback', [SocialmentController::class, 'callback'])->name('socialment.callback');
+    Route::get('/login/{provider}', [SocialmentController::class, 'redirect'])->name('socialment.redirect');
+    Route::get('/login/{provider}/callback', [SocialmentController::class, 'callback'])->name('socialment.callback');
 });
