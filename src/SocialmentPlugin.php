@@ -22,18 +22,16 @@ class SocialmentPlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->renderHook('panels::auth.login.form.after', function () {
-            if (! $this->evaluate($this->visible)) {
+            if (!$this->evaluate($this->visible)) {
                 return '';
             }
 
-            return View::make('socialment::providers-list', [
-                'providers' => [
-                    'azure' => [
-                        'icon' => 'azure',
-                        'label' => 'Azure',
-                    ],
-                ],
-            ]);
+            return View::make(
+                config('socialment.view.providers-list', 'socialment::providers-list'),
+                [
+                    'providers' => config('socialment.providers'),
+                ]
+            );
         });
     }
 
@@ -62,6 +60,13 @@ class SocialmentPlugin implements Plugin
     public function visible(bool | Closure $visible): static
     {
         $this->visible = $visible;
+
+        return $this;
+    }
+
+    public function userModel(string|Closure $model): static
+    {
+        config()->set('socialment.models.user', (($model instanceof Closure) ? $model() : $model));
 
         return $this;
     }

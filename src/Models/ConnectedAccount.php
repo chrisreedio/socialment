@@ -2,7 +2,6 @@
 
 namespace ChrisReedIO\Socialment\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +23,7 @@ class ConnectedAccount extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(config('socialment.models.user'));
     }
 
     public function scopeProvider(Builder $query, string $provider): Builder

@@ -2,12 +2,8 @@
 
 namespace ChrisReedIO\Socialment\Controllers;
 
-use App\Models\User;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
-// use App\Models\User;
-// use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-// use Illuminate\Foundation\Auth\User;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;
@@ -25,13 +21,13 @@ class SocialmentController extends Controller
     public function callback(string $provider)
     {
         $socialUser = Socialite::driver($provider)->user();
-        // Create a user or log them in...
-        // dd($socialUser);
+
         $tokenExpiration = match ($provider) {
             'azure' => now()->addSeconds($socialUser->expiresIn),
             default => null,
         };
 
+		// Create a user or log them in...
         /** @var ConnectedAccount */
         $connectedAccount = ConnectedAccount::firstOrNew([
             'provider' => $provider,
@@ -40,24 +36,22 @@ class SocialmentController extends Controller
             'name' => $socialUser->getName(),
             'nickname' => $socialUser->getNickname(),
             'email' => $socialUser->getEmail(),
-            // 'phone' => $socialUser->get(),
             'avatar' => $socialUser->getAvatar(),
             'token' => $socialUser->token,
             'refresh_token' => $socialUser->refreshToken,
             'expires_at' => $tokenExpiration,
         ]);
 
-        if (! $connectedAccount->exists) {
-            // create the user and save this connected account
-            $connectedAccount->user()->associate(User::create([
+        if (!$connectedAccount->exists) {
+            // Create the user and save this connected account
+            $connectedAccount->user()->associate(config('socialment.models.user')::create([
                 'name' => $socialUser->getName(),
                 'email' => $socialUser->getEmail(),
-                // 'phone' => $socialUser->get(),
             ]))->save();
         }
 
         auth()->login($connectedAccount->user);
 
-        return redirect()->route('filament.admin.pages.dashboard');
+        return redirect()->route(config('socialment.routes.home'));
     }
 }
