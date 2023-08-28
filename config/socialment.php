@@ -8,11 +8,8 @@ return [
     'providers' => [
         // Use the key based on the provider's documentation
         // 'azure' => [
-        // Font Awesome icon class
-        // 	'icon' => 'fab-microsoft',
-
-        // The label to display for the provider
-        // 	'label' => 'Azure Active Directory',
+        // 	'icon' => 'fab-microsoft', // Font Awesome icon class
+        // 	'label' => 'Azure Active Directory', // The label to display for the provider
         // ]
     ],
 
