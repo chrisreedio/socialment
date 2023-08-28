@@ -27,6 +27,7 @@
         "filament/filament": "^3.0",
         "illuminate/contracts": "^10.0",
         "laravel/socialite": "^5.8",
+        "owenvoke/blade-fontawesome": "^2.4",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {

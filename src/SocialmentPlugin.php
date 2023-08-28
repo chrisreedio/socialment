@@ -6,7 +6,7 @@ use Closure;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\View;
 
 class SocialmentPlugin implements Plugin
 {
@@ -23,7 +23,7 @@ class SocialmentPlugin implements Plugin
     {
         $panel->renderHook('panels::auth.login.form.after', function () {
             if (! $this->evaluate($this->visible)) {
-                return '';
+                return 'NOT VISIBLE';
             }
 
             return View::make('socialment::providers-list', [
@@ -44,7 +44,11 @@ class SocialmentPlugin implements Plugin
 
     public static function make(): static
     {
-        return app(static::class);
+        $plugin = app(static::class);
+
+		$plugin->visible = fn () => true;
+
+		return $plugin;
     }
 
     public static function get(): static
