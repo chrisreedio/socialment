@@ -9,9 +9,9 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/chrisreedio/socialment.svg?style=flat-square)](https://packagist.org/packages/chrisreedio/socialment)
 
 
+Bring up-to-date and simple Socialite support to your Filament admin panel with this plugin. Adds OAuth buttons to your login page.
 
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Ideal for Laravel and Filament users seeking a straightforward OAuth integration.
 
 ## Installation
 
@@ -64,7 +64,9 @@ return [
 ];
 ```
 
-This package also uses the [Blade Font Awesome package](https://github.com/owenvoke/blade-fontawesome) by [Owen Voke](https://github.com/owenvoke). Search for brand icons on the [Font Awesome Website](https://fontawesome.com/search?o=r&f=brands).
+This package also uses the [Blade Font Awesome package](https://github.com/owenvoke/blade-fontawesome) by [Owen Voke](https://github.com/owenvoke). 
+
+Search for brand icons on the [Font Awesome Website](https://fontawesome.com/search?o=r&f=brands).
 
 ### Panel Configuration
 
