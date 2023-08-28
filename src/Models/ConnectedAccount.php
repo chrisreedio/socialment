@@ -5,6 +5,7 @@ namespace ChrisReedIO\Socialment\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\User;
 
 class ConnectedAccount extends Model
 {
