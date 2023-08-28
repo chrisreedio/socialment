@@ -22,7 +22,7 @@ class SocialmentPlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->renderHook('panels::auth.login.form.after', function () {
-            if (!$this->evaluate($this->visible)) {
+            if (! $this->evaluate($this->visible)) {
                 return '';
             }
 
@@ -64,7 +64,7 @@ class SocialmentPlugin implements Plugin
         return $this;
     }
 
-    public function userModel(string|Closure $model): static
+    public function userModel(string | Closure $model): static
     {
         config()->set('socialment.models.user', (($model instanceof Closure) ? $model() : $model));
 

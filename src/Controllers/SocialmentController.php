@@ -27,7 +27,7 @@ class SocialmentController extends Controller
             default => null,
         };
 
-		// Create a user or log them in...
+        // Create a user or log them in...
         /** @var ConnectedAccount */
         $connectedAccount = ConnectedAccount::firstOrNew([
             'provider' => $provider,
@@ -42,7 +42,7 @@ class SocialmentController extends Controller
             'expires_at' => $tokenExpiration,
         ]);
 
-        if (!$connectedAccount->exists) {
+        if (! $connectedAccount->exists) {
             // Create the user and save this connected account
             $connectedAccount->user()->associate(config('socialment.models.user')::create([
                 'name' => $socialUser->getName(),
