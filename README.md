@@ -1,9 +1,13 @@
-# Providing SocialStream style functionality for Filament.
+# Socialment - Socialite OAuth Support for Filament
+
+![Socialment](https://github.com/chrisreedio/socialment/assets/77644584/53dd1b45-d775-4335-a7ec-ae18456bcab4)
+
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/chrisreedio/socialment.svg?style=flat-square)](https://packagist.org/packages/chrisreedio/socialment)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/chrisreedio/socialment/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/chrisreedio/socialment/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/chrisreedio/socialment/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/chrisreedio/socialment/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/chrisreedio/socialment.svg?style=flat-square)](https://packagist.org/packages/chrisreedio/socialment)
+
 
 
 
