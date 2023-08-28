@@ -71,10 +71,10 @@ class SocialmentServiceProvider extends PackageServiceProvider
             $this->getAssetPackageName()
         );
 
-        FilamentAsset::registerScriptData(
-            $this->getScriptData(),
-            $this->getAssetPackageName()
-        );
+        // FilamentAsset::registerScriptData(
+        //     $this->getScriptData(),
+        //     $this->getAssetPackageName()
+        // );
 
         // Icon Registration
         FilamentIcon::register($this->getIcons());
@@ -104,8 +104,8 @@ class SocialmentServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('socialment', __DIR__ . '/../resources/dist/components/socialment.js'),
-            Css::make('socialment-styles', __DIR__ . '/../resources/dist/socialment.css'),
-            Js::make('socialment-scripts', __DIR__ . '/../resources/dist/socialment.js'),
+            // Css::make('socialment-styles', __DIR__ . '/../resources/dist/socialment.css'),
+            // Js::make('socialment-scripts', __DIR__ . '/../resources/dist/socialment.js'),
         ];
     }
 

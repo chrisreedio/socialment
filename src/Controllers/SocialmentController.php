@@ -11,7 +11,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;
 
-class OAuthController extends Controller
+class SocialmentController extends Controller
 {
     use AuthorizesRequests;
     use ValidatesRequests;
