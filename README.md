@@ -40,11 +40,6 @@ composer require chrisreedio/socialment
 ## Usage
 
 
-
-
-
-
-
 #### Initial Setup
 
 After installation you should publish and run the migration(s) with:
