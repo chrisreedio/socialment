@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $provider
+ * @property string $provider_user_id
+ */
 class ConnectedAccount extends Model
 {
     protected $fillable = [
