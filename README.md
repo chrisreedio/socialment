@@ -8,10 +8,25 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/chrisreedio/socialment/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/chrisreedio/socialment/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/chrisreedio/socialment.svg?style=flat-square)](https://packagist.org/packages/chrisreedio/socialment)
 
+## About
 
 Bring up-to-date and simple Socialite support to your Filament admin panel with this plugin. Adds OAuth buttons to your login page.
 
 Ideal for Laravel and Filament users seeking a straightforward OAuth integration.
+
+#### References
+
+This package extends [Laravel Socialite](https://laravel.com/docs/master/socialite). Socialite currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, and Bitbucket out of the box.
+
+Refer to the [Socialite documentation](https://laravel.com/docs/master/socialite) for more information on how to configure your application to use these providers.
+
+Many other providers are available via the [Socialite Providers](https://socialiteproviders.com/) website. Refer to the documentation for each provider for information on how to configure your application to use them.
+
+### Demo
+
+For an example usage of this package, see [ChrisReedIO/Socialment-Demo](https://github.com/chrisreedio/socialment-demo).
+
+---
 
 ## Installation
 
@@ -24,27 +39,18 @@ composer require chrisreedio/socialment
 
 ## Usage
 
-This package extends [Laravel Socialite](https://laravel.com/docs/master/socialite). Socialite currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, and Bitbucket out of the box.
-
-Refer to the [Socialite documentation](https://laravel.com/docs/master/socialite) for more information on how to configure your application to use these providers.
-
-Many other providers are available via the [Socialite Providers](https://socialiteproviders.com/) website. Refer to the documentation for each provider for information on how to configure your application to use them.
-
-### Demo
-
-For an example usage of this package, see [ChrisReedIO/Socialment-Demo](https://github.com/chrisreedio/socialment-demo).
 
 
 
-### Initial Setup
+
+
+
+#### Initial Setup
 
 After installation you should publish and run the migration(s) with:
 
-{% warning %}
-
-This package requires that the `users` `password` field be nullable. If you have not already done so, you should update your `users` table migration to make this change.
-
-{% endwarning %}
+> [!IMPORTANT]  
+> This package requires that the `users` `password` field be nullable. If you have not already done so, you should update your `users` table migration to make this change.
 
 ```bash
 php artisan vendor:publish --tag="socialment-migrations"
@@ -57,16 +63,21 @@ Then publish the config file with:
 php artisan vendor:publish --tag="socialment-config"
 ```
 
-Configure the `socialment` config file to specify providers in the following format:
+#### Provider Configuration
+
+Whether you're using the default providers or adding your own, you'll need to configure them in the `socialment.php` config file.
+
+Configure the `socialment.php` config file to specify providers in the following format:
 
 ```php
 return [
     'providers' => [
         'azure' => [
-        	'icon' => 'fab-microsoft',
-        	'label' => 'Azure',
+        	'icon' => 'fab-microsoft', // Font Awesome Brand Icon
+        	'label' => 'Azure', // Display Name on the Login Page
         ]
     ],
+	// ... Other Configuration Parameters
 ];
 ```
 
@@ -99,25 +110,47 @@ $panel->plugins([
 ]);
 ```
 
-## Extras
+### Extras
 
 You may publish and customize the views using
 
 ```bash
 php artisan vendor:publish --tag="socialment-views"
+
 ```
+
+### Config
 
 This is the contents of the published config file:
 
 ```php
 return [
-    'providers' => [
-
-    ],
+	'view' => [
+		// Set the text above the provider list
+		'prompt' => 'Or Login Via',
+		// Or change out the view completely with your own
+		'providers-list' => 'socialment::providers-list',
+	],
+	'routes' => [
+		'home' => 'filament.admin.pages.dashboard',
+	],
+	'models' => [
+		// If you want to use a custom user model, you can specify it here.
+		'user' => \App\Models\User::class,
+	],
+	'providers' => [
+        'azure' => [
+        	'icon' => 'fab-microsoft',
+        	'label' => 'Azure Active Directory',
+        ]
+	],
 ];
 ```
 
 ## Testing
+
+> [!NOTE] 
+> Tests have yet to be written for this package. They are on my TODO list. I'm also open to PRs.
 
 ```bash
 composer test
