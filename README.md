@@ -68,8 +68,8 @@ Configure the `socialment.php` config file to specify providers in the following
 return [
     'providers' => [
         'azure' => [
-        	'icon' => 'fab-microsoft', // Font Awesome Brand Icon
-        	'label' => 'Azure', // Display Name on the Login Page
+            'icon' => 'fab-microsoft', // Font Awesome Brand Icon
+            'label' => 'Azure', // Display Name on the Login Page
         ]
     ],
 	// ... Other Configuration Parameters
@@ -122,7 +122,7 @@ This is the contents of the published config file:
 return [
 	'view' => [
 		// Set the text above the provider list
-		'prompt' => 'Or Login Via',
+        'prompt' => 'Or Login Via',
 		// Or change out the view completely with your own
 		'providers-list' => 'socialment::providers-list',
 	],
