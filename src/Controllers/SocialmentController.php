@@ -20,7 +20,7 @@ class SocialmentController extends Controller
 
     public function callback(string $provider)
     {
-		/** @var \SocialiteProviders\Manager\OAuth2\User */
+        /** @var \SocialiteProviders\Manager\OAuth2\User */
         $socialUser = Socialite::driver($provider)->user();
 
         $tokenExpiration = match ($provider) {
