@@ -14,6 +14,11 @@ Bring up-to-date and simple Socialite support to your Filament admin panel with 
 
 Ideal for Laravel and Filament users seeking a straightforward OAuth integration.
 
+> [!WARNING]
+> Socialment is currently in beta. Please report any issues you encounter.
+> Caution is advised if you choose to use this package in production.
+> Azure AD support has been the only tested provider so far.
+
 #### References
 
 This package extends [Laravel Socialite](https://laravel.com/docs/master/socialite). Socialite currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, and Bitbucket out of the box.
