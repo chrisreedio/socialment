@@ -13,6 +13,11 @@
 Bring up-to-date and simple Socialite support to your Filament admin panel with this plugin. Adds OAuth buttons to your login page.
 
 Ideal for Laravel and Filament users seeking a straightforward OAuth integration.
+    
+> [!WARNING]
+> Socialment is currently in beta. Please report any issues you encounter.
+> Caution is advised if you choose to use this package in production.
+> Azure AD support has been the only tested provider so far.
 
 #### References
 
@@ -25,6 +30,8 @@ Many other providers are available via the [Socialite Providers](https://sociali
 ### Demo
 
 For an example usage of this package, see [ChrisReedIO/Socialment-Demo](https://github.com/chrisreedio/socialment-demo).
+
+![image](https://github.com/chrisreedio/socialment/assets/77644584/c07c6518-df0b-4143-8826-efa3cbdaa681)
 
 ---
 
