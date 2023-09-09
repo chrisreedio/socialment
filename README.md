@@ -45,7 +45,7 @@ composer require chrisreedio/socialment
 ```
 
 > [!WARNING]
-> You must set `"minimum-stability": "stable",` in your composer.json while Socialment is still in Beta.
+> You must set `"minimum-stability": "dev",` in your composer.json while Socialment is still in Beta.
 
 
 ## Usage
