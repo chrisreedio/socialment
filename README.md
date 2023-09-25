@@ -67,6 +67,16 @@ php artisan vendor:publish --tag="socialment-config"
 
 #### Provider Configuration
 
+> [!IMPORTANT]
+> At this point, you'll need to configure your application to use the provider(s) you want to support. 
+> Either configure the needed stock socialite providers or [community maintained providers](https://socialiteproviders.com/).
+> Refer to the [Socialite documentation](https://laravel.com/docs/master/socialite) for more information.
+> 
+> This will usually involve installing a package and configuring your application's `config/services.php` file.
+
+
+##### Socialment Configuration
+
 Whether you're using the default providers or adding your own, you'll need to configure them in the `socialment.php` config file.
 
 Configure the `socialment.php` config file to specify providers in the following format:
@@ -82,6 +92,65 @@ return [
 	// ... Other Configuration Parameters
 ];
 ```
+
+> [!IMPORTANT]
+> For this configured Azure provider, the redirect URI would be `https://DOMAIN/login/azure/redirect`
+> The callback URI would be `https://DOMAIN/login/azure/callback` 
+
+##### Sample Provider Configuration - Azure Active Directory
+
+For example, the sample provider included in the stock `socialment.php` config is Azure Active Directory. 
+To start, You would refer to the documentation for the [Azure Socialite Provider](https://socialiteproviders.com/Microsoft-Azure/).
+
+Normally, you would follow the providers documentation on the aforementioned link but to demostrate the process for Socialment, I'll include the steps here.
+
+Per their documentation, you would install the community Azure provider via
+
+```bash
+composer require socialiteproviders/microsoft-azure
+```
+
+Then you would configure your `config/services.php` file to include the Azure provider's credentials:
+
+```php
+'azure' => [    
+  'client_id' => env('AZURE_CLIENT_ID'),
+  'client_secret' => env('AZURE_CLIENT_SECRET'),
+  'redirect' => env('AZURE_REDIRECT_URI'),
+  'tenant' => env('AZURE_TENANT_ID'),
+  'proxy' => env('PROXY')  // optionally
+],
+```
+
+In addition, you need to add this provider's event listener to your `app/Providers/EventServiceProvider.php` file:
+
+```php
+protected $listen = [
+	// ... other listeners
+
+    \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+        // ... other providers
+        \SocialiteProviders\Azure\AzureExtendSocialite::class.'@handle',
+    ],
+];
+```
+
+Finally, don't forget to add the needed environment variables to your `.env` file:
+
+```dotenv
+AZURE_CLIENT_ID=
+AZURE_CLIENT_SECRET=
+AZURE_REDIRECT_URI=
+AZURE_TENANT_ID=
+```
+
+The `usage` section can usually be ignored as that is the main part this package should handle for you. 
+
+> [!NOTE]
+> It is in the plans to improve the handling of the sign in process to align more with Socialstream in allowing you to specify an `action` class or closure to handle the sign in process. 
+> This will allow for customized handling on a per provider, per application basis.
+
+
 
 This package also uses the [Blade Font Awesome package](https://github.com/owenvoke/blade-fontawesome) by [Owen Voke](https://github.com/owenvoke). 
 
