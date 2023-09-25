@@ -16,7 +16,9 @@ Ideal for Laravel and Filament users seeking a straightforward OAuth integration
     
 > [!WARNING]
 > Socialment is currently in beta. Please report any issues you encounter.
+> 
 > Caution is advised if you choose to use this package in production.
+> 
 > Azure AD support has been the only tested provider so far.
 
 #### References
@@ -52,7 +54,9 @@ composer require chrisreedio/socialment
 After installation you should publish and run the migration(s) with:
 
 > [!IMPORTANT]  
-> This package requires that the `users` `password` field be nullable. If you have not already done so, you should update your `users` table migration to make this change.
+> This package requires that the `users` `password` field be nullable.
+>
+> If you have not already done so, you should update your `users` table migration to make this change.
 
 ```bash
 php artisan vendor:publish --tag="socialment-migrations"
@@ -69,7 +73,9 @@ php artisan vendor:publish --tag="socialment-config"
 
 > [!IMPORTANT]
 > At this point, you'll need to configure your application to use the provider(s) you want to support. 
+> 
 > Either configure the needed stock socialite providers or [community maintained providers](https://socialiteproviders.com/).
+>
 > Refer to the [Socialite documentation](https://laravel.com/docs/master/socialite) for more information.
 > 
 > This will usually involve installing a package and configuring your application's `config/services.php` file.
@@ -95,6 +101,7 @@ return [
 
 > [!IMPORTANT]
 > For this configured Azure provider, the redirect URI would be `https://DOMAIN/login/azure/redirect`
+> 
 > The callback URI would be `https://DOMAIN/login/azure/callback` 
 
 ##### Sample Provider Configuration - Azure Active Directory
@@ -148,6 +155,7 @@ The `usage` section can usually be ignored as that is the main part this package
 
 > [!NOTE]
 > It is in the plans to improve the handling of the sign in process to align more with Socialstream in allowing you to specify an `action` class or closure to handle the sign in process. 
+> 
 > This will allow for customized handling on a per provider, per application basis.
 
 
