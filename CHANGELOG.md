@@ -7,14 +7,14 @@ All notable changes to `socialment` will be documented in this file.
 
 ## 3.0.1-beta - 2023-09-26
 
-## What's Changed
+### What's Changed
 * **Handling existing user accounts** by @chrisreedio in https://github.com/chrisreedio/socialment/pull/14
 * Fix README badge by @chrisreedio in https://github.com/chrisreedio/socialment/pull/9
 * Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/chrisreedio/socialment/pull/10
 * Added sample provider configuration to README by @chrisreedio in https://github.com/chrisreedio/socialment/pull/12
 * Formatting by @chrisreedio in https://github.com/chrisreedio/socialment/pull/13
 
-## New Contributors
+### New Contributors
 * @dependabot made their first contribution in https://github.com/chrisreedio/socialment/pull/10
 
 **Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.0.0-beta...v3.0.1-beta
@@ -26,7 +26,7 @@ All notable changes to `socialment` will be documented in this file.
 > It has only been tested at length with the Azure AD provider. 
 > Please report issues if you find them and I'm open to PRs!
 
-## What's Changed
+### What's Changed
 * Package is working in Demo Project by @chrisreedio in https://github.com/chrisreedio/socialment/pull/1
 * Update README.md by @chrisreedio in https://github.com/chrisreedio/socialment/pull/2
 * Adding package description. by @chrisreedio in https://github.com/chrisreedio/socialment/pull/3
@@ -36,7 +36,7 @@ All notable changes to `socialment` will be documented in this file.
 * Added gap when multiple providers in use. by @chrisreedio in https://github.com/chrisreedio/socialment/pull/7
 * Added warning to readme about the current beta state. by @chrisreedio in https://github.com/chrisreedio/socialment/pull/8
 
-## New Contributors
+### New Contributors
 * @chrisreedio made their first contribution in https://github.com/chrisreedio/socialment/pull/1
 
 **Full Changelog**: https://github.com/chrisreedio/socialment/commits/v3.0.0-beta
