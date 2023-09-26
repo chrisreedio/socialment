@@ -10,56 +10,56 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialmentController extends Controller
 {
-	use AuthorizesRequests;
-	use ValidatesRequests;
+    use AuthorizesRequests;
+    use ValidatesRequests;
 
-	public function redirect(string $provider)
-	{
-		return Socialite::driver($provider)->redirect();
-	}
+    public function redirect(string $provider)
+    {
+        return Socialite::driver($provider)->redirect();
+    }
 
-	public function callback(string $provider)
-	{
-		/** @var \SocialiteProviders\Manager\OAuth2\User */
-		$socialUser = Socialite::driver($provider)->user();
+    public function callback(string $provider)
+    {
+        /** @var \SocialiteProviders\Manager\OAuth2\User */
+        $socialUser = Socialite::driver($provider)->user();
 
-		$userModel = config('socialment.models.user');
+        $userModel = config('socialment.models.user');
 
-		$tokenExpiration = match ($provider) {
-			'azure' => now()->addSeconds($socialUser->expiresIn),
-			default => null,
-		};
+        $tokenExpiration = match ($provider) {
+            'azure' => now()->addSeconds($socialUser->expiresIn),
+            default => null,
+        };
 
-		// Create a user or log them in...
-		/** @var ConnectedAccount */
-		$connectedAccount = ConnectedAccount::firstOrNew([
-			'provider' => $provider,
-			'provider_user_id' => $socialUser->getId(),
-		], [
-			'name' => $socialUser->getName(),
-			'nickname' => $socialUser->getNickname(),
-			'email' => $socialUser->getEmail(),
-			'avatar' => $socialUser->getAvatar(),
-			'token' => $socialUser->token,
-			'refresh_token' => $socialUser->refreshToken,
-			'expires_at' => $tokenExpiration,
-		]);
+        // Create a user or log them in...
+        /** @var ConnectedAccount */
+        $connectedAccount = ConnectedAccount::firstOrNew([
+            'provider' => $provider,
+            'provider_user_id' => $socialUser->getId(),
+        ], [
+            'name' => $socialUser->getName(),
+            'nickname' => $socialUser->getNickname(),
+            'email' => $socialUser->getEmail(),
+            'avatar' => $socialUser->getAvatar(),
+            'token' => $socialUser->token,
+            'refresh_token' => $socialUser->refreshToken,
+            'expires_at' => $tokenExpiration,
+        ]);
 
-		if (!$connectedAccount->exists) {
-			// Check for an existing user with this email
-			// Create a new user if one doesn't exist
-			$user = $userModel::where('email', $socialUser->getEmail())->first()
-				?? $userModel::create([
-					'name' => $socialUser->getName(),
-					'email' => $socialUser->getEmail(),
-				]);
+        if (! $connectedAccount->exists) {
+            // Check for an existing user with this email
+            // Create a new user if one doesn't exist
+            $user = $userModel::where('email', $socialUser->getEmail())->first()
+                ?? $userModel::create([
+                    'name' => $socialUser->getName(),
+                    'email' => $socialUser->getEmail(),
+                ]);
 
-			// Associate the user and save this connected account
-			$connectedAccount->user()->associate($user)->save();
-		}
+            // Associate the user and save this connected account
+            $connectedAccount->user()->associate($user)->save();
+        }
 
-		auth()->login($connectedAccount->user);
+        auth()->login($connectedAccount->user);
 
-		return redirect()->route(config('socialment.routes.home'));
-	}
+        return redirect()->route(config('socialment.routes.home'));
+    }
 }
