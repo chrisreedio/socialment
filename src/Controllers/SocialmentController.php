@@ -23,6 +23,8 @@ class SocialmentController extends Controller
         /** @var \SocialiteProviders\Manager\OAuth2\User */
         $socialUser = Socialite::driver($provider)->user();
 
+        $userModel = config('socialment.models.user');
+
         $tokenExpiration = match ($provider) {
             'azure' => now()->addSeconds($socialUser->expiresIn),
             default => null,
@@ -44,11 +46,16 @@ class SocialmentController extends Controller
         ]);
 
         if (! $connectedAccount->exists) {
-            // Create the user and save this connected account
-            $connectedAccount->user()->associate(config('socialment.models.user')::create([
-                'name' => $socialUser->getName(),
-                'email' => $socialUser->getEmail(),
-            ]))->save();
+            // Check for an existing user with this email
+            // Create a new user if one doesn't exist
+            $user = $userModel::where('email', $socialUser->getEmail())->first()
+                ?? $userModel::create([
+                    'name' => $socialUser->getName(),
+                    'email' => $socialUser->getEmail(),
+                ]);
+
+            // Associate the user and save this connected account
+            $connectedAccount->user()->associate($user)->save();
         }
 
         auth()->login($connectedAccount->user);
