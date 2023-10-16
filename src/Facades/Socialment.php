@@ -11,6 +11,6 @@ class Socialment extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \ChrisReedIO\Socialment\Socialment::class;
+        return \ChrisReedIO\Socialment\SocialmentPlugin::class;
     }
 }
