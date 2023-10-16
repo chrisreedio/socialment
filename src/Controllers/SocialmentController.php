@@ -2,8 +2,8 @@
 
 namespace ChrisReedIO\Socialment\Controllers;
 
-use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\Facades\Socialment;
+use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -62,8 +62,8 @@ class SocialmentController extends Controller
 
         auth()->login($connectedAccount->user);
 
-		/** @var SocialmentPlugin $plugin */
-		$plugin = Socialment::getFacadeRoot();
+        /** @var SocialmentPlugin $plugin */
+        $plugin = Socialment::getFacadeRoot();
         $plugin->executePostLogin($connectedAccount);
 
         return redirect()->route(config('socialment.routes.home'));

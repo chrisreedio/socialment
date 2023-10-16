@@ -15,7 +15,7 @@ class SocialmentPlugin implements Plugin
 
     public bool | Closure | null $visible = null;
 
-	public ?Closure $loginCallback = null;
+    public ?Closure $loginCallback = null;
 
     public function getId(): string
     {
@@ -74,29 +74,24 @@ class SocialmentPlugin implements Plugin
         return $this;
     }
 
-	/**
-	 * Sets up a callback to be called after a user logs in.
-	 * @param Closure $callback 
-	 * @return static 
-	 */
-	public function postLogin(Closure $callback): static
-	{
-		// config()->set('socialment.post_login', $callback);
-		$this->loginCallback = $callback;
+    /**
+     * Sets up a callback to be called after a user logs in.
+     */
+    public function postLogin(Closure $callback): static
+    {
+        // config()->set('socialment.post_login', $callback);
+        $this->loginCallback = $callback;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Executes the post login callback. Set up closure to execute via the postLogin method.
-	 * @param ConnectedAccount $account 
-	 * @return void 
-	 */
-	public function executePostLogin(ConnectedAccount $account): void
-	{
-		if ($callback = $this->loginCallback) {
-			($callback)($account);
-		}
-	}
+    /**
+     * Executes the post login callback. Set up closure to execute via the postLogin method.
+     */
+    public function executePostLogin(ConnectedAccount $account): void
+    {
+        if ($callback = $this->loginCallback) {
+            ($callback)($account);
+        }
+    }
 }
-
