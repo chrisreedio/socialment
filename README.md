@@ -202,6 +202,28 @@ php artisan vendor:publish --tag="socialment-views"
 
 ```
 
+#### Post Login Callback
+
+You may configure a post login hook/callback by adding code similar to the following to the `boot` method of a service provider:
+
+```php
+use ChrisReedIO\Socialment\Models\ConnectedAccount;
+
+public function boot(): void
+{
+	Socialment::postLogin(function (ConnectedAccount $connectedAccount) {
+		// Handle custom post login logic here.
+		Log::info('User logged in with ' . $connectedAccount->provider . ' account', [
+			'connectedAccount' => $connectedAccount,
+		]);
+	});
+}
+```
+
+The user relation can be accessed via `$connectedAccount->user`. 
+
+The `ConnectedAccount` is passed instead of the `User` so that you can easily know which social account was used for the login. 
+
 ### Config
 
 This is the contents of the published config file:
