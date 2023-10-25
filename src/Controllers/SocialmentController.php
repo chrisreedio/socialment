@@ -58,6 +58,17 @@ class SocialmentController extends Controller
 
             // Associate the user and save this connected account
             $connectedAccount->user()->associate($user)->save();
+        } else {
+            // Update the connected account with the latest data
+            $connectedAccount->update([
+                'name' => $socialUser->getName(),
+                'nickname' => $socialUser->getNickname(),
+                'email' => $socialUser->getEmail(),
+                'avatar' => $socialUser->getAvatar(),
+                'token' => $socialUser->token,
+                'refresh_token' => $socialUser->refreshToken,
+                'expires_at' => $tokenExpiration,
+            ]);
         }
 
         auth()->login($connectedAccount->user);
