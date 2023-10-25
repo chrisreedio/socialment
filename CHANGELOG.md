@@ -5,6 +5,14 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## 3.1.1-beta - 2023-10-25
+
+### What's Changed
+
+- Update Connected Account Details on Login by @chrisreedio in https://github.com/chrisreedio/socialment/pull/21
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.1.0-beta...3.1.1-beta
+
 ## v3.1.0-beta - Post Login Callback - 2023-10-16
 
 ### What's Changed
