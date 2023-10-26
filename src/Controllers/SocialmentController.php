@@ -2,6 +2,7 @@
 
 namespace ChrisReedIO\Socialment\Controllers;
 
+use ChrisReedIO\Socialment\Exceptions\AbortedLoginException;
 use ChrisReedIO\Socialment\Facades\Socialment;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
@@ -11,7 +12,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
-use Socialment\Exceptions\AbortedLoginException;
+
 
 class SocialmentController extends Controller
 {
@@ -54,7 +55,7 @@ class SocialmentController extends Controller
                 'expires_at' => $tokenExpiration,
             ]);
 
-            if (! $connectedAccount->exists) {
+            if (!$connectedAccount->exists) {
                 // Check for an existing user with this email
                 // Create a new user if one doesn't exist
                 $user = $userModel::where('email', $socialUser->getEmail())->first()

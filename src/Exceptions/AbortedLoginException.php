@@ -1,6 +1,6 @@
 <?php
 
-namespace Socialment\Exceptions;
+namespace ChrisReedIO\Socialment\Exceptions;
 
 use Exception;
 
