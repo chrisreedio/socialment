@@ -10,6 +10,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
+use Socialment\Exceptions\AbortedLoginException;
 
 class SocialmentController extends Controller
 {
@@ -23,6 +24,9 @@ class SocialmentController extends Controller
 
     public function callback(string $provider)
     {
+        /** @var SocialmentPlugin $plugin */
+        $plugin = Socialment::getFacadeRoot();
+
         try {
             /** @var \SocialiteProviders\Manager\OAuth2\User */
             $socialUser = Socialite::driver($provider)->user();
@@ -49,7 +53,7 @@ class SocialmentController extends Controller
                 'expires_at' => $tokenExpiration,
             ]);
 
-            if (! $connectedAccount->exists) {
+            if (!$connectedAccount->exists) {
                 // Check for an existing user with this email
                 // Create a new user if one doesn't exist
                 $user = $userModel::where('email', $socialUser->getEmail())->first()
@@ -62,15 +66,18 @@ class SocialmentController extends Controller
                 $connectedAccount->user()->associate($user)->save();
             }
 
+            $plugin->executePreLogin($connectedAccount);
+
             auth()->login($connectedAccount->user);
 
-            /** @var SocialmentPlugin $plugin */
-            $plugin = Socialment::getFacadeRoot();
             $plugin->executePostLogin($connectedAccount);
 
+            // TODO - Move this config paramater to a 'getHomeRoute' method on the plugin
             return redirect()->route(config('socialment.routes.home'));
         } catch (InvalidStateException $e) {
-            return redirect()->route(Socialment::getLoginRoute());
+            return redirect()->route($plugin->getLoginRoute());
+        } catch (AbortedLoginException $e) {
+            return redirect()->route($plugin->getLoginRoute());
         }
     }
 }
