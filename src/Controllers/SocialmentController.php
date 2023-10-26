@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 
 class SocialmentController extends Controller
 {
@@ -22,45 +23,23 @@ class SocialmentController extends Controller
 
     public function callback(string $provider)
     {
-        /** @var \SocialiteProviders\Manager\OAuth2\User */
-        $socialUser = Socialite::driver($provider)->user();
+        try {
+            /** @var \SocialiteProviders\Manager\OAuth2\User */
+            $socialUser = Socialite::driver($provider)->user();
 
-        $userModel = config('socialment.models.user');
+            $userModel = config('socialment.models.user');
 
-        $tokenExpiration = match ($provider) {
-            'azure' => now()->addSeconds($socialUser->expiresIn),
-            default => null,
-        };
+            $tokenExpiration = match ($provider) {
+                'azure' => now()->addSeconds($socialUser->expiresIn),
+                default => null,
+            };
 
-        // Create a user or log them in...
-        /** @var ConnectedAccount */
-        $connectedAccount = ConnectedAccount::firstOrNew([
-            'provider' => $provider,
-            'provider_user_id' => $socialUser->getId(),
-        ], [
-            'name' => $socialUser->getName(),
-            'nickname' => $socialUser->getNickname(),
-            'email' => $socialUser->getEmail(),
-            'avatar' => $socialUser->getAvatar(),
-            'token' => $socialUser->token,
-            'refresh_token' => $socialUser->refreshToken,
-            'expires_at' => $tokenExpiration,
-        ]);
-
-        if (! $connectedAccount->exists) {
-            // Check for an existing user with this email
-            // Create a new user if one doesn't exist
-            $user = $userModel::where('email', $socialUser->getEmail())->first()
-                ?? $userModel::create([
-                    'name' => $socialUser->getName(),
-                    'email' => $socialUser->getEmail(),
-                ]);
-
-            // Associate the user and save this connected account
-            $connectedAccount->user()->associate($user)->save();
-        } else {
-            // Update the connected account with the latest data
-            $connectedAccount->update([
+            // Create a user or log them in...
+            /** @var ConnectedAccount */
+            $connectedAccount = ConnectedAccount::firstOrNew([
+                'provider' => $provider,
+                'provider_user_id' => $socialUser->getId(),
+            ], [
                 'name' => $socialUser->getName(),
                 'nickname' => $socialUser->getNickname(),
                 'email' => $socialUser->getEmail(),
@@ -69,14 +48,29 @@ class SocialmentController extends Controller
                 'refresh_token' => $socialUser->refreshToken,
                 'expires_at' => $tokenExpiration,
             ]);
+
+            if (!$connectedAccount->exists) {
+                // Check for an existing user with this email
+                // Create a new user if one doesn't exist
+                $user = $userModel::where('email', $socialUser->getEmail())->first()
+                    ?? $userModel::create([
+                        'name' => $socialUser->getName(),
+                        'email' => $socialUser->getEmail(),
+                    ]);
+
+                // Associate the user and save this connected account
+                $connectedAccount->user()->associate($user)->save();
+            }
+
+            auth()->login($connectedAccount->user);
+
+            /** @var SocialmentPlugin $plugin */
+            $plugin = Socialment::getFacadeRoot();
+            $plugin->executePostLogin($connectedAccount);
+
+            return redirect()->route(config('socialment.routes.home'));
+        } catch (InvalidStateException $e) {
+            return redirect()->route(Socialment::getLoginRoute());
         }
-
-        auth()->login($connectedAccount->user);
-
-        /** @var SocialmentPlugin $plugin */
-        $plugin = Socialment::getFacadeRoot();
-        $plugin->executePostLogin($connectedAccount);
-
-        return redirect()->route(config('socialment.routes.home'));
     }
 }
