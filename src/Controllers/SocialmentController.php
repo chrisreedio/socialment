@@ -76,6 +76,8 @@ class SocialmentController extends Controller
             return redirect()->route(config('socialment.routes.home'));
         } catch (InvalidStateException $e) {
             return redirect()->route($plugin->getLoginRoute());
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            return redirect()->route($plugin->getLoginRoute());
         } catch (AbortedLoginException $e) {
             return redirect()->route($plugin->getLoginRoute());
         }
