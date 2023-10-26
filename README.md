@@ -224,6 +224,27 @@ The user relation can be accessed via `$connectedAccount->user`.
 
 The `ConnectedAccount` is passed instead of the `User` so that you can easily know which social account was used for the login. 
 
+#### Login Route for failed logins
+
+If a login fails or encounters a InvalidStateException, the user will be redirected to the configured `loginRoute` route.
+
+This defaults to `filament.admin.auth.login` but can be overriden on the plugin declaration in your panel provider configuration:
+
+```php
+$panel->plugins([
+    \ChrisReedIO\Socialment\SocialmentPlugin::make()
+        ->loginRoute('filament.staff.auth.login')
+]);
+```
+You may also use a closure here to dynamically set the route:
+
+```php
+$panel->plugins([
+    \ChrisReedIO\Socialment\SocialmentPlugin::make()
+        ->loginRoute(fn () => SomeFunctionToGetTheRouteName())
+]);
+```
+
 ### Config
 
 This is the contents of the published config file:

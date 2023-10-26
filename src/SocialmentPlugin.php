@@ -17,6 +17,8 @@ class SocialmentPlugin implements Plugin
 
     public ?Closure $loginCallback = null;
 
+    protected string $loginRoute = 'filament.admin.auth.login';
+
     public function getId(): string
     {
         return 'socialment';
@@ -72,6 +74,18 @@ class SocialmentPlugin implements Plugin
         config()->set('socialment.models.user', (($model instanceof Closure) ? $model() : $model));
 
         return $this;
+    }
+
+    public function loginRoute(string | Closure $route): static
+    {
+        $this->loginRoute = $route;
+
+        return $this;
+    }
+
+    public function getLoginRoute(): string
+    {
+        return (string) $this->evaluate($this->loginRoute);
     }
 
     /**
