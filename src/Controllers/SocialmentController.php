@@ -83,6 +83,7 @@ class SocialmentController extends Controller
             return redirect()->route($plugin->getLoginRoute());
         } catch (AbortedLoginException $e) {
             Session::flash('socialment.error', $e->getMessage());
+
             return redirect()->route($plugin->getLoginRoute());
         }
     }
