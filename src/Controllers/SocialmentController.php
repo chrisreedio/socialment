@@ -8,6 +8,7 @@ use ChrisReedIO\Socialment\SocialmentPlugin;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Socialment\Exceptions\AbortedLoginException;
@@ -77,8 +78,10 @@ class SocialmentController extends Controller
         } catch (InvalidStateException $e) {
             return redirect()->route($plugin->getLoginRoute());
         } catch (\GuzzleHttp\Exception\ClientException $e) {
+            // TODO - Log this exception
             return redirect()->route($plugin->getLoginRoute());
         } catch (AbortedLoginException $e) {
+            Session::flash('socialment.error', $e->getMessage());
             return redirect()->route($plugin->getLoginRoute());
         }
     }

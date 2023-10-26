@@ -7,6 +7,7 @@ use Closure;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
 class SocialmentPlugin implements Plugin
@@ -28,6 +29,19 @@ class SocialmentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
+        $panel->renderHook('panels::auth.login.form.before', function () {
+            if (! $this->evaluate($this->visible)) {
+                return '';
+            }
+
+            return View::make(
+                config('socialment.view.login-error', 'socialment::login-error'),
+                [
+                    'message' => Session::get('socialment.error'),
+                ]
+            );
+        });
+
         $panel->renderHook('panels::auth.login.form.after', function () {
             if (! $this->evaluate($this->visible)) {
                 return '';
