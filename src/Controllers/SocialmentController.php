@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 
-
 class SocialmentController extends Controller
 {
     use AuthorizesRequests;
@@ -55,7 +54,7 @@ class SocialmentController extends Controller
                 'expires_at' => $tokenExpiration,
             ]);
 
-            if (!$connectedAccount->exists) {
+            if (! $connectedAccount->exists) {
                 // Check for an existing user with this email
                 // Create a new user if one doesn't exist
                 $user = $userModel::where('email', $socialUser->getEmail())->first()
