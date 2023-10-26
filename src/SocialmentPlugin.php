@@ -27,7 +27,7 @@ class SocialmentPlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->renderHook('panels::auth.login.form.after', function () {
-            if (!$this->evaluate($this->visible)) {
+            if (! $this->evaluate($this->visible)) {
                 return '';
             }
 
@@ -85,7 +85,7 @@ class SocialmentPlugin implements Plugin
 
     public function getLoginRoute(): string
     {
-        return (string)$this->evaluate($this->loginRoute);
+        return (string) $this->evaluate($this->loginRoute);
     }
 
     /**
