@@ -16,6 +16,7 @@ class SocialmentPlugin implements Plugin
     public bool | Closure | null $visible = null;
 
     public ?Closure $preLoginCallback = null;
+
     public ?Closure $postLoginCallback = null;
 
     protected string $loginRoute = 'filament.admin.auth.login';
@@ -28,7 +29,7 @@ class SocialmentPlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->renderHook('panels::auth.login.form.after', function () {
-            if (!$this->evaluate($this->visible)) {
+            if (! $this->evaluate($this->visible)) {
                 return '';
             }
 
