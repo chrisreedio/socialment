@@ -30,14 +30,16 @@ class SocialmentPlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->renderHook('panels::auth.login.form.before', function () {
-            if (! $this->evaluate($this->visible)) {
+            $errorMessage = Session::get('socialment.error');
+
+            if (! $this->evaluate($this->visible) || ! $errorMessage) {
                 return '';
             }
 
             return View::make(
                 config('socialment.view.login-error', 'socialment::login-error'),
                 [
-                    'message' => Session::get('socialment.error'),
+                    'message' => $errorMessage,
                 ]
             );
         });
