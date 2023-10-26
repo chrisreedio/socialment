@@ -11,7 +11,7 @@
             <a class='ring-2 ring-slate-700/50 hover:ring-slate-600/70 transition-all rounded-lg px-4 py-3 flex gap-2 items-center'
                 href='{{ route('socialment.redirect', $providerName) }}'>
                 <x-icon name="{{ $provider['icon'] }}" class='w-8' />
-                <span class="text-red-400">{{ $provider['label'] }}</span>
+                <span>{{ $provider['label'] }}</span>
             </a>
         @endforeach
     </div>
