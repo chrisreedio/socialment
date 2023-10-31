@@ -2,12 +2,14 @@
 
 namespace ChrisReedIO\Socialment\Controllers;
 
+use ChrisReedIO\Socialment\Exceptions\AbortedLoginException;
 use ChrisReedIO\Socialment\Facades\Socialment;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 
@@ -23,6 +25,9 @@ class SocialmentController extends Controller
 
     public function callback(string $provider)
     {
+        /** @var SocialmentPlugin $plugin */
+        $plugin = Socialment::getFacadeRoot();
+
         try {
             /** @var \SocialiteProviders\Manager\OAuth2\User */
             $socialUser = Socialite::driver($provider)->user();
@@ -60,17 +65,36 @@ class SocialmentController extends Controller
 
                 // Associate the user and save this connected account
                 $connectedAccount->user()->associate($user)->save();
+            } else {
+                // Update the connected account with the latest data
+                $connectedAccount->update([
+                    'name' => $socialUser->getName(),
+                    'nickname' => $socialUser->getNickname(),
+                    'email' => $socialUser->getEmail(),
+                    'avatar' => $socialUser->getAvatar(),
+                    'token' => $socialUser->token,
+                    'refresh_token' => $socialUser->refreshToken,
+                    'expires_at' => $tokenExpiration,
+                ]);
             }
+
+            $plugin->executePreLogin($connectedAccount);
 
             auth()->login($connectedAccount->user);
 
-            /** @var SocialmentPlugin $plugin */
-            $plugin = Socialment::getFacadeRoot();
             $plugin->executePostLogin($connectedAccount);
 
+            // TODO - Move this config paramater to a 'getHomeRoute' method on the plugin
             return redirect()->route(config('socialment.routes.home'));
         } catch (InvalidStateException $e) {
-            return redirect()->route(Socialment::getLoginRoute());
+            return redirect()->route($plugin->getLoginRoute());
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            // TODO - Log this exception
+            return redirect()->route($plugin->getLoginRoute());
+        } catch (AbortedLoginException $e) {
+            Session::flash('socialment.error', $e->getMessage());
+
+            return redirect()->route($plugin->getLoginRoute());
         }
     }
 }

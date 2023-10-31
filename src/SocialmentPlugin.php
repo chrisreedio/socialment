@@ -7,6 +7,7 @@ use Closure;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
 class SocialmentPlugin implements Plugin
@@ -15,7 +16,9 @@ class SocialmentPlugin implements Plugin
 
     public bool | Closure | null $visible = null;
 
-    public ?Closure $loginCallback = null;
+    public ?Closure $preLoginCallback = null;
+
+    public ?Closure $postLoginCallback = null;
 
     protected string $loginRoute = 'filament.admin.auth.login';
 
@@ -26,6 +29,21 @@ class SocialmentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
+        $panel->renderHook('panels::auth.login.form.before', function () {
+            $errorMessage = Session::get('socialment.error');
+
+            if (! $this->evaluate($this->visible) || ! $errorMessage) {
+                return '';
+            }
+
+            return View::make(
+                config('socialment.view.login-error', 'socialment::login-error'),
+                [
+                    'message' => $errorMessage,
+                ]
+            );
+        });
+
         $panel->renderHook('panels::auth.login.form.after', function () {
             if (! $this->evaluate($this->visible)) {
                 return '';
@@ -89,12 +107,35 @@ class SocialmentPlugin implements Plugin
     }
 
     /**
+     * Sets up a callback to be called before a user is logged in.
+     * This is useful if you wish to check a user's roles before allowing them to login.
+     * Throw a Socialment\Exceptions\AbortedLoginException to abort the login.
+     */
+    public function preLogin(Closure $callback): static
+    {
+        // config()->set('socialment.post_login', $callback);
+        $this->postLoginCallback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Executes the pre login callback. Set up closure to execute via the preLogin method.
+     */
+    public function executePreLogin(ConnectedAccount $account): void
+    {
+        if ($callback = $this->postLoginCallback) {
+            ($callback)($account);
+        }
+    }
+
+    /**
      * Sets up a callback to be called after a user logs in.
      */
     public function postLogin(Closure $callback): static
     {
         // config()->set('socialment.post_login', $callback);
-        $this->loginCallback = $callback;
+        $this->postLoginCallback = $callback;
 
         return $this;
     }
@@ -104,7 +145,7 @@ class SocialmentPlugin implements Plugin
      */
     public function executePostLogin(ConnectedAccount $account): void
     {
-        if ($callback = $this->loginCallback) {
+        if ($callback = $this->postLoginCallback) {
             ($callback)($account);
         }
     }

@@ -73,6 +73,19 @@ Then publish the config file with:
 php artisan vendor:publish --tag="socialment-config"
 ```
 
+Finally, edit your panel's `tailwind.config.js` content section to include the following:
+
+```js
+    content: [
+        "./app/Filament/**/*.php",
+        "./resources/views/filament/**/*.blade.php",
+        "./vendor/filament/**/*.blade.php",
+
+		// Ensure the line below is listed
+        "./vendor/chrisreedio/socialment/resources/**/*.blade.php",
+    ],
+```
+
 #### Provider Configuration
 
 > [!IMPORTANT]
