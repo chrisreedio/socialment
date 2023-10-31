@@ -54,7 +54,7 @@ class SocialmentController extends Controller
                 'expires_at' => $tokenExpiration,
             ]);
 
-            if (! $connectedAccount->exists) {
+            if (!$connectedAccount->exists) {
                 // Check for an existing user with this email
                 // Create a new user if one doesn't exist
                 $user = $userModel::where('email', $socialUser->getEmail())->first()
@@ -65,6 +65,17 @@ class SocialmentController extends Controller
 
                 // Associate the user and save this connected account
                 $connectedAccount->user()->associate($user)->save();
+            } else {
+                // Update the connected account with the latest data
+                $connectedAccount->update([
+                    'name' => $socialUser->getName(),
+                    'nickname' => $socialUser->getNickname(),
+                    'email' => $socialUser->getEmail(),
+                    'avatar' => $socialUser->getAvatar(),
+                    'token' => $socialUser->token,
+                    'refresh_token' => $socialUser->refreshToken,
+                    'expires_at' => $tokenExpiration,
+                ]);
             }
 
             $plugin->executePreLogin($connectedAccount);
