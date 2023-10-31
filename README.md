@@ -82,7 +82,7 @@ Finally, edit your panel's `tailwind.config.js` content section to include the f
         "./vendor/filament/**/*.blade.php",
 
 		// Ensure the line below is listed
-        "./vendor/chrisreedio/socialment/**/*.blade.php",
+        "./vendor/chrisreedio/socialment/resources/**/*.blade.php",
     ],
 ```
 
