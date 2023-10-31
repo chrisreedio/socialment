@@ -54,7 +54,7 @@ class SocialmentController extends Controller
                 'expires_at' => $tokenExpiration,
             ]);
 
-            if (!$connectedAccount->exists) {
+            if (! $connectedAccount->exists) {
                 // Check for an existing user with this email
                 // Create a new user if one doesn't exist
                 $user = $userModel::where('email', $socialUser->getEmail())->first()
