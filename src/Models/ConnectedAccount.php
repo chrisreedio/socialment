@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property string $provider
  * @property string $provider_user_id
+ * @property string $name
+ * @property string $nickname
+ * @property string $email
+ * @property string $avatar
+ * @property string $token
+ * @property string $refresh_token
+ * @property Datetime $expires_at
  */
 class ConnectedAccount extends Model
 {
