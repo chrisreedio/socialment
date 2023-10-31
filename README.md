@@ -46,12 +46,7 @@ You can install the package via composer:
 composer require chrisreedio/socialment
 ```
 
-> [!WARNING]
-> You must set `"minimum-stability": "dev",` in your composer.json while Socialment is still in Beta.
-
-
 ## Usage
-
 
 #### Initial Setup
 
