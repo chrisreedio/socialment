@@ -50,36 +50,29 @@ composer require chrisreedio/socialment
 
 #### Initial Setup
 
-After installation you should publish and run the migration(s) with:
-
-> [!IMPORTANT]  
-> This package requires that the `users` `password` field be nullable.
->
-> If you have not already done so, you should update your `users` table migration to make this change.
+You can easily perform the initial setup by running the following command:
 
 ```bash
-php artisan vendor:publish --tag="socialment-migrations"
-php artisan migrate
+php artisan socialment:install
 ```
 
-Then publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="socialment-config"
-```
-
-Finally, edit your panel's `tailwind.config.js` content section to include the following:
+Additionally, edit your panel's `tailwind.config.js` content section to include the last line of the following:
 
 ```js
     content: [
         "./app/Filament/**/*.php",
         "./resources/views/filament/**/*.blade.php",
         "./vendor/filament/**/*.blade.php",
+        // ... Other Content Paths
 
-		// Ensure the line below is listed
+		// Ensure the line below is listed!!!
         "./vendor/chrisreedio/socialment/resources/**/*.blade.php",
     ],
 ```
+
+If this step is forgotten, the styling of the plugin will not be applied.
+
+Please continue to the next sections to continue the setup process.
 
 #### Provider Configuration
 
