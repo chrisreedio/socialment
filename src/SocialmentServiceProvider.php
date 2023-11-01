@@ -147,6 +147,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
     {
         return [
             'create_connected_accounts_table',
+            'modify_users_table_nullable_password',
         ];
     }
 }
