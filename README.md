@@ -74,6 +74,18 @@ If this step is forgotten, the styling of the plugin will not be applied.
 
 Please continue to the next sections to continue the setup process.
 
+### Panel Configuration
+
+Include this plugin in your panel configuration:
+
+```php
+$panel
+	->plugins([
+		// ... Other Plugins
+		\ChrisReedIO\Socialment\SocialmentPlugin::make(),
+	])
+```
+
 #### Provider Configuration
 
 > [!IMPORTANT]
@@ -168,18 +180,6 @@ The `usage` section can usually be ignored as that is the main part this package
 This package also uses the [Blade Font Awesome package](https://github.com/owenvoke/blade-fontawesome) by [Owen Voke](https://github.com/owenvoke). 
 
 Search for brand icons on the [Font Awesome Website](https://fontawesome.com/search?o=r&f=brands).
-
-### Panel Configuration
-
-Include this plugin in your panel configuration:
-
-```php
-$panel
-	->plugins([
-		// ... Other Plugins
-		\ChrisReedIO\Socialment\SocialmentPlugin::make(),
-	])
-```
 
 
 ### Visibility Override
