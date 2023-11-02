@@ -17,7 +17,7 @@ class SocialmentPlugin implements Plugin
 {
     use EvaluatesClosures;
 
-    public bool|Closure|null $visible = null;
+    public bool | Closure | null $visible = null;
 
     /** @var array<Closure> */
     public array $preLoginCallbacks = [];
@@ -39,7 +39,7 @@ class SocialmentPlugin implements Plugin
         $panel->renderHook('panels::auth.login.form.before', function () {
             $errorMessage = Session::get('socialment.error');
 
-            if (!$this->evaluate($this->visible) || !$errorMessage) {
+            if (! $this->evaluate($this->visible) || ! $errorMessage) {
                 return '';
             }
 
@@ -52,7 +52,7 @@ class SocialmentPlugin implements Plugin
         });
 
         $panel->renderHook('panels::auth.login.form.after', function () {
-            if (!$this->evaluate($this->visible)) {
+            if (! $this->evaluate($this->visible)) {
                 return '';
             }
 
@@ -76,7 +76,7 @@ class SocialmentPlugin implements Plugin
     {
         $plugin = app(static::class);
 
-        $plugin->visible = fn() => true;
+        $plugin->visible = fn () => true;
 
         return $plugin;
     }
@@ -89,21 +89,21 @@ class SocialmentPlugin implements Plugin
         return $plugin;
     }
 
-    public function visible(bool|Closure $visible): static
+    public function visible(bool | Closure $visible): static
     {
         $this->visible = $visible;
 
         return $this;
     }
 
-    public function userModel(string|Closure $model): static
+    public function userModel(string | Closure $model): static
     {
         config()->set('socialment.models.user', (($model instanceof Closure) ? $model() : $model));
 
         return $this;
     }
 
-    public function loginRoute(string|Closure $route): static
+    public function loginRoute(string | Closure $route): static
     {
         $this->loginRoute = $route;
 
@@ -112,7 +112,7 @@ class SocialmentPlugin implements Plugin
 
     public function getLoginRoute(): string
     {
-        return (string)$this->evaluate($this->loginRoute);
+        return (string) $this->evaluate($this->loginRoute);
     }
 
     /**
