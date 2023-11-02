@@ -3,10 +3,7 @@
 namespace ChrisReedIO\Socialment;
 
 use ChrisReedIO\Socialment\Testing\TestsSocialment;
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
-use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
@@ -60,6 +57,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        //
     }
 
     public function packageBooted(): void

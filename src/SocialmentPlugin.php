@@ -10,6 +10,9 @@ use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
+use function array_merge;
+use function config;
+
 class SocialmentPlugin implements Plugin
 {
     use EvaluatesClosures;
@@ -23,6 +26,8 @@ class SocialmentPlugin implements Plugin
     public array $postLoginCallbacks = [];
 
     protected string $loginRoute = 'filament.admin.auth.login';
+
+    protected array $providers = [];
 
     public function getId(): string
     {
@@ -51,10 +56,12 @@ class SocialmentPlugin implements Plugin
                 return '';
             }
 
+            $providers = array_merge(config('socialment.providers'), $this->providers);
+
             return View::make(
                 config('socialment.view.providers-list', 'socialment::providers-list'),
                 [
-                    'providers' => config('socialment.providers'),
+                    'providers' => $providers,
                 ]
             );
         });
@@ -62,7 +69,7 @@ class SocialmentPlugin implements Plugin
 
     public function boot(Panel $panel): void
     {
-        //
+
     }
 
     public static function make(): static
@@ -150,5 +157,15 @@ class SocialmentPlugin implements Plugin
         foreach ($this->postLoginCallbacks as $callback) {
             ($callback)($account);
         }
+    }
+
+    public function registerProvider(string $provider, string $icon, string $label): static
+    {
+        $this->providers[$provider] = [
+            'icon' => $icon,
+            'label' => $label,
+        ];
+
+        return $this;
     }
 }
