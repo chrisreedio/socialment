@@ -114,7 +114,7 @@ class SocialmentPlugin implements Plugin
     public function preLogin(Closure $callback): static
     {
         // config()->set('socialment.post_login', $callback);
-        $this->postLoginCallback = $callback;
+        $this->preLoginCallback = $callback;
 
         return $this;
     }
