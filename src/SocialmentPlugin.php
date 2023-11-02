@@ -17,7 +17,7 @@ class SocialmentPlugin implements Plugin
 {
     use EvaluatesClosures;
 
-    public bool | Closure | null $visible = null;
+    public bool|Closure|null $visible = null;
 
     /** @var array<Closure> */
     public array $preLoginCallbacks = [];
@@ -27,7 +27,7 @@ class SocialmentPlugin implements Plugin
 
     protected string $loginRoute = 'filament.admin.auth.login';
 
-    protected array $extensionProviders = [];
+    protected array $providers = [];
 
     public function getId(): string
     {
@@ -39,7 +39,7 @@ class SocialmentPlugin implements Plugin
         $panel->renderHook('panels::auth.login.form.before', function () {
             $errorMessage = Session::get('socialment.error');
 
-            if (! $this->evaluate($this->visible) || ! $errorMessage) {
+            if (!$this->evaluate($this->visible) || !$errorMessage) {
                 return '';
             }
 
@@ -50,16 +50,13 @@ class SocialmentPlugin implements Plugin
                 ]
             );
         });
-    }
 
-    public function boot(Panel $panel): void
-    {
         $panel->renderHook('panels::auth.login.form.after', function () {
-            if (! $this->evaluate($this->visible)) {
+            if (!$this->evaluate($this->visible)) {
                 return '';
             }
 
-            $providers = array_merge($this->extensionProviders, config('socialment.providers'));
+            $providers = array_merge(config('socialment.providers'), $this->providers);
 
             return View::make(
                 config('socialment.view.providers-list', 'socialment::providers-list'),
@@ -70,11 +67,16 @@ class SocialmentPlugin implements Plugin
         });
     }
 
+    public function boot(Panel $panel): void
+    {
+
+    }
+
     public static function make(): static
     {
         $plugin = app(static::class);
 
-        $plugin->visible = fn () => true;
+        $plugin->visible = fn() => true;
 
         return $plugin;
     }
@@ -87,21 +89,21 @@ class SocialmentPlugin implements Plugin
         return $plugin;
     }
 
-    public function visible(bool | Closure $visible): static
+    public function visible(bool|Closure $visible): static
     {
         $this->visible = $visible;
 
         return $this;
     }
 
-    public function userModel(string | Closure $model): static
+    public function userModel(string|Closure $model): static
     {
         config()->set('socialment.models.user', (($model instanceof Closure) ? $model() : $model));
 
         return $this;
     }
 
-    public function loginRoute(string | Closure $route): static
+    public function loginRoute(string|Closure $route): static
     {
         $this->loginRoute = $route;
 
@@ -110,7 +112,7 @@ class SocialmentPlugin implements Plugin
 
     public function getLoginRoute(): string
     {
-        return (string) $this->evaluate($this->loginRoute);
+        return (string)$this->evaluate($this->loginRoute);
     }
 
     /**
@@ -159,7 +161,7 @@ class SocialmentPlugin implements Plugin
 
     public function registerProvider(string $provider, string $icon, string $label): static
     {
-        $this->extensionProviders[$provider] = [
+        $this->providers[$provider] = [
             'icon' => $icon,
             'label' => $label,
         ];

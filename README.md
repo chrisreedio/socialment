@@ -82,7 +82,7 @@ Include this plugin in your panel configuration:
 $panel
 	->plugins([
 		// ... Other Plugins
-		\ChrisReedIO\Socialment\SocialmentPlugin::make(),
+        \ChrisReedIO\Socialment\SocialmentPlugin::make(),        
 	])
 ```
 
@@ -115,13 +115,24 @@ return [
 	// ... Other Configuration Parameters
 ];
 ```
+Providers specified in the config file are global across all panels.
+
+##### Per-Panel Provider Configuration
+
+You may also specify providers on a per-panel basis. To do this use the `->registerProvider` method on the plugin.
+
+```php
+$panel->plugins([
+    \ChrisReedIO\Socialment\SocialmentPlugin::make()
+        ->registerProvider('azure', 'fab-microsoft', 'Azure Active Directory'),
+]);
+```
+##### Sample Provider Configuration - Azure Active Directory
 
 > [!IMPORTANT]
 > For this configured Azure provider, the redirect URI would be `https://DOMAIN/login/azure/redirect`
 > 
 > The callback URI would be `https://DOMAIN/login/azure/callback` 
-
-##### Sample Provider Configuration - Azure Active Directory
 
 For example, the sample provider included in the stock `socialment.php` config is Azure Active Directory. 
 To start, You would refer to the documentation for the [Azure Socialite Provider](https://socialiteproviders.com/Microsoft-Azure/).
