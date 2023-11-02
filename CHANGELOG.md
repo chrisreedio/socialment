@@ -5,6 +5,15 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v3.3.0 - 2023-11-02
+
+### What's Changed
+
+- Multiple Pre/Post Login Hooks/Callbacks by @chrisreedio in https://github.com/chrisreedio/socialment/pull/29
+- Update README to include pre-login hooks by @chrisreedio in https://github.com/chrisreedio/socialment/pull/30
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.2.1...v3.3.0
+
 ## v3.2.1 - 2023-11-02
 
 ### What's Changed
