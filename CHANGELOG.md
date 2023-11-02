@@ -5,6 +5,15 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v3.2.1 - 2023-11-02
+
+### What's Changed
+
+- Fixed assigning the `preLogin` hook to the `postLoginCallback`.
+- Migration to allow nullable passwords for users by @chrisreedio in https://github.com/chrisreedio/socialment/pull/28
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.2.0...v3.2.1
+
 ## v3.2.0 - 2023-10-31
 
 **Socialment is still considered beta but should no longer require the dev stability composer setting**
