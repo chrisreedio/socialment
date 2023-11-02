@@ -16,9 +16,11 @@ class SocialmentPlugin implements Plugin
 
     public bool | Closure | null $visible = null;
 
-    public ?Closure $preLoginCallback = null;
+    /** @var array<Closure> */
+    public array $preLoginCallbacks = [];
 
-    public ?Closure $postLoginCallback = null;
+    /** @var array<Closure> */
+    public array $postLoginCallbacks = [];
 
     protected string $loginRoute = 'filament.admin.auth.login';
 
@@ -114,7 +116,7 @@ class SocialmentPlugin implements Plugin
     public function preLogin(Closure $callback): static
     {
         // config()->set('socialment.post_login', $callback);
-        $this->preLoginCallback = $callback;
+        $this->preLoginCallbacks[] = $callback;
 
         return $this;
     }
@@ -124,7 +126,7 @@ class SocialmentPlugin implements Plugin
      */
     public function executePreLogin(ConnectedAccount $account): void
     {
-        if ($callback = $this->postLoginCallback) {
+        foreach ($this->preLoginCallbacks as $callback) {
             ($callback)($account);
         }
     }
@@ -135,7 +137,7 @@ class SocialmentPlugin implements Plugin
     public function postLogin(Closure $callback): static
     {
         // config()->set('socialment.post_login', $callback);
-        $this->postLoginCallback = $callback;
+        $this->postLoginCallbacks[] = $callback;
 
         return $this;
     }
@@ -145,7 +147,7 @@ class SocialmentPlugin implements Plugin
      */
     public function executePostLogin(ConnectedAccount $account): void
     {
-        if ($callback = $this->postLoginCallback) {
+        foreach ($this->postLoginCallbacks as $callback) {
             ($callback)($account);
         }
     }
