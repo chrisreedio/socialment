@@ -5,6 +5,16 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v3.4.0 - 2023-11-02
+
+### What's Changed
+
+- Per-Panel Configuration of Providers by @chrisreedio in https://github.com/chrisreedio/socialment/pull/31
+
+This feature is still highly experimental and the signature is highly likely to change (become more standardized).
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.3.0...v3.4.0
+
 ## v3.3.0 - 2023-11-02
 
 ### What's Changed
