@@ -203,15 +203,25 @@ php artisan vendor:publish --tag="socialment-views"
 
 ```
 
-#### Post Login Callback
+#### Login Callbacks
 
-You may configure a post login hook/callback by adding code similar to the following to the `boot` method of a service provider:
+You may configure pre/post login hooks/callbacks by adding code similar to the following to the `boot` method of a service provider:
 
 ```php
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 
 public function boot(): void
 {
+    // Post Login Hook
+	Socialment::preLogin(function (ConnectedAccount $connectedAccount) {
+		// Handle custom pre login logic here.
+	});
+	// Multiple hooks can be added
+	Socialment::preLogin(function (ConnectedAccount $connectedAccount) {
+		// Handle additional custom pre login logic here if you need.
+	});
+
+    // Post Login Hook
 	Socialment::postLogin(function (ConnectedAccount $connectedAccount) {
 		// Handle custom post login logic here.
 		Log::info('User logged in with ' . $connectedAccount->provider . ' account', [
