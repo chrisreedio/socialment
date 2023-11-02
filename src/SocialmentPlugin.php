@@ -24,7 +24,7 @@ class SocialmentPlugin implements Plugin
 
     protected string $loginRoute = 'filament.admin.auth.login';
 
-    protected array $extensionProviders= [ ];
+    protected array $extensionProviders = [];
 
     public function getId(): string
     {
@@ -54,6 +54,7 @@ class SocialmentPlugin implements Plugin
             }
 
             $providers = array_merge($this->extensionProviders, config('socialment.providers'));
+
             return View::make(
                 config('socialment.view.providers-list', 'socialment::providers-list'),
                 [
