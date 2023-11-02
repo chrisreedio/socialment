@@ -16,11 +16,11 @@ class SocialmentPlugin implements Plugin
 
     public bool | Closure | null $visible = null;
 
-    /** @var array<Closure>  */
-    public array $preLoginCallbacks = [ ];
+    /** @var array<Closure> */
+    public array $preLoginCallbacks = [];
 
-    /** @var array<Closure>  */
-    public array $postLoginCallbacks = [ ];
+    /** @var array<Closure> */
+    public array $postLoginCallbacks = [];
 
     protected string $loginRoute = 'filament.admin.auth.login';
 
