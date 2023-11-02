@@ -24,6 +24,8 @@ class SocialmentPlugin implements Plugin
 
     protected string $loginRoute = 'filament.admin.auth.login';
 
+    protected array $extensionProviders= [ ];
+
     public function getId(): string
     {
         return 'socialment';
@@ -51,10 +53,11 @@ class SocialmentPlugin implements Plugin
                 return '';
             }
 
+            $providers = array_merge($this->extensionProviders, config('socialment.providers'));
             return View::make(
                 config('socialment.view.providers-list', 'socialment::providers-list'),
                 [
-                    'providers' => config('socialment.providers'),
+                    'providers' => $providers,
                 ]
             );
         });
@@ -150,5 +153,15 @@ class SocialmentPlugin implements Plugin
         foreach ($this->postLoginCallbacks as $callback) {
             ($callback)($account);
         }
+    }
+
+    public function registerProvider(string $provider, string $icon, string $label): static
+    {
+        $this->extensionProviders[$provider] = [
+            'icon' => $icon,
+            'label' => $label,
+        ];
+
+        return $this;
     }
 }
