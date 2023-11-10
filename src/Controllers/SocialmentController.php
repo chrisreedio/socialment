@@ -112,7 +112,9 @@ class SocialmentController extends Controller
 
             $plugin->executePostLogin($connectedAccount);
 
-            return redirect()->route($homeRoute);
+            $intendedUrl = request()->session()->pull('socialment.url.intended', $homeRoute);
+
+            return redirect()->route($intendedUrl);
         } catch (InvalidStateException $e) {
             Session::flash('socialment.error', 'Something went wrong. Please try again.');
             return redirect()->route($loginRoute);
