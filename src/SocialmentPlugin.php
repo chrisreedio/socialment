@@ -5,11 +5,11 @@ namespace ChrisReedIO\Socialment;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use Closure;
 use Filament\Contracts\Plugin;
+use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
-
 use function array_merge;
 use function config;
 
@@ -17,7 +17,7 @@ class SocialmentPlugin implements Plugin
 {
     use EvaluatesClosures;
 
-    public bool | Closure | null $visible = null;
+    public bool|Closure|null $visible = null;
 
     /** @var array<Closure> */
     public array $preLoginCallbacks = [];
@@ -25,9 +25,14 @@ class SocialmentPlugin implements Plugin
     /** @var array<Closure> */
     public array $postLoginCallbacks = [];
 
-    protected string $loginRoute = 'filament.admin.auth.login';
+    protected ?string $loginRoute = null;
+    protected ?string $homeRoute = null;
 
     protected array $providers = [];
+
+    protected ?bool $multiPanel = null;
+
+    public Panel $panel;
 
     public function getId(): string
     {
@@ -39,7 +44,7 @@ class SocialmentPlugin implements Plugin
         $panel->renderHook('panels::auth.login.form.before', function () {
             $errorMessage = Session::get('socialment.error');
 
-            if (! $this->evaluate($this->visible) || ! $errorMessage) {
+            if (!$this->evaluate($this->visible) || !$errorMessage) {
                 return '';
             }
 
@@ -52,7 +57,7 @@ class SocialmentPlugin implements Plugin
         });
 
         $panel->renderHook('panels::auth.login.form.after', function () {
-            if (! $this->evaluate($this->visible)) {
+            if (!$this->evaluate($this->visible)) {
                 return '';
             }
 
@@ -62,6 +67,8 @@ class SocialmentPlugin implements Plugin
                 config('socialment.view.providers-list', 'socialment::providers-list'),
                 [
                     'providers' => $providers,
+                    'multiPanel' => $this->isMultiPanel(),
+                    'panel' => $this->panel,
                 ]
             );
         });
@@ -69,14 +76,14 @@ class SocialmentPlugin implements Plugin
 
     public function boot(Panel $panel): void
     {
-
+        $this->panel = $panel;
     }
 
     public static function make(): static
     {
         $plugin = app(static::class);
 
-        $plugin->visible = fn () => true;
+        $plugin->visible = fn() => true;
 
         return $plugin;
     }
@@ -89,30 +96,52 @@ class SocialmentPlugin implements Plugin
         return $plugin;
     }
 
-    public function visible(bool | Closure $visible): static
+    public function visible(bool|Closure $visible): static
     {
         $this->visible = $visible;
 
         return $this;
     }
 
-    public function userModel(string | Closure $model): static
+    public function userModel(string|Closure $model): static
     {
         config()->set('socialment.models.user', (($model instanceof Closure) ? $model() : $model));
 
         return $this;
     }
 
-    public function loginRoute(string | Closure $route): static
+    public function loginRoute(string|Closure $route): static
     {
         $this->loginRoute = $route;
 
         return $this;
     }
 
-    public function getLoginRoute(): string
+    public function getLoginRoute(): ?string
     {
-        return (string) $this->evaluate($this->loginRoute);
+        // dd($this->panel->getId());
+        if ($this->loginRoute === null) {
+            return null;
+            // return $this->panel->getLoginUrl();
+        }
+        return (string)$this->evaluate($this->loginRoute);
+    }
+
+    public function homeRoute(string|Closure $route): static
+    {
+        $this->homeRoute = $route;
+
+        return $this;
+    }
+
+    public function getHomeRoute(): ?string
+    {
+        if ($this->homeRoute === null) {
+            return null;
+            // return $this->panel->getHomeUrl();
+            // return config('app.url') . '/' . Filament::getDefaultPanel()->getPath();
+        }
+        return (string)$this->evaluate($this->homeRoute);
     }
 
     /**
@@ -168,4 +197,21 @@ class SocialmentPlugin implements Plugin
 
         return $this;
     }
+
+    public function multiPanel(bool $multiPanel = true): static
+    {
+        $this->multiPanel = $multiPanel;
+
+        return $this;
+    }
+
+    public function isMultiPanel(): bool
+    {
+        // 'Guess' what setting this should be if it's not explicitly set.
+        if ($this->multiPanel === null)
+            return count(Filament::getPanels()) > 1;
+
+        return $this->multiPanel;
+    }
+
 }
