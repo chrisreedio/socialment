@@ -10,7 +10,6 @@
         </span>
         <div class="flex-grow border-t border-gray-400"></div>
     </div>
-    Panel Path: {{ $panelPath ?? 'no panel' }} - {{ $multiPanel ? 'multi' : 'single' }}
     <div class='flex justify-center gap-x-4 p-2'>
         @foreach ($providers as $providerName => $provider)
             @php
