@@ -10,6 +10,7 @@ use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+
 use function array_merge;
 use function config;
 
@@ -17,7 +18,7 @@ class SocialmentPlugin implements Plugin
 {
     use EvaluatesClosures;
 
-    public bool|Closure|null $visible = null;
+    public bool | Closure | null $visible = null;
 
     /** @var array<Closure> */
     public array $preLoginCallbacks = [];
@@ -26,6 +27,7 @@ class SocialmentPlugin implements Plugin
     public array $postLoginCallbacks = [];
 
     protected ?string $loginRoute = null;
+
     protected ?string $homeRoute = null;
 
     protected array $providers = [];
@@ -44,7 +46,7 @@ class SocialmentPlugin implements Plugin
         $panel->renderHook('panels::auth.login.form.before', function () {
             $errorMessage = Session::get('socialment.error');
 
-            if (!$this->evaluate($this->visible) || !$errorMessage) {
+            if (! $this->evaluate($this->visible) || ! $errorMessage) {
                 return '';
             }
 
@@ -57,7 +59,7 @@ class SocialmentPlugin implements Plugin
         });
 
         $panel->renderHook('panels::auth.login.form.after', function () {
-            if (!$this->evaluate($this->visible)) {
+            if (! $this->evaluate($this->visible)) {
                 return '';
             }
 
@@ -83,7 +85,7 @@ class SocialmentPlugin implements Plugin
     {
         $plugin = app(static::class);
 
-        $plugin->visible = fn() => true;
+        $plugin->visible = fn () => true;
 
         return $plugin;
     }
@@ -96,21 +98,21 @@ class SocialmentPlugin implements Plugin
         return $plugin;
     }
 
-    public function visible(bool|Closure $visible): static
+    public function visible(bool | Closure $visible): static
     {
         $this->visible = $visible;
 
         return $this;
     }
 
-    public function userModel(string|Closure $model): static
+    public function userModel(string | Closure $model): static
     {
         config()->set('socialment.models.user', (($model instanceof Closure) ? $model() : $model));
 
         return $this;
     }
 
-    public function loginRoute(string|Closure $route): static
+    public function loginRoute(string | Closure $route): static
     {
         $this->loginRoute = $route;
 
@@ -124,10 +126,11 @@ class SocialmentPlugin implements Plugin
             return null;
             // return $this->panel->getLoginUrl();
         }
-        return (string)$this->evaluate($this->loginRoute);
+
+        return (string) $this->evaluate($this->loginRoute);
     }
 
-    public function homeRoute(string|Closure $route): static
+    public function homeRoute(string | Closure $route): static
     {
         $this->homeRoute = $route;
 
@@ -141,7 +144,8 @@ class SocialmentPlugin implements Plugin
             // return $this->panel->getHomeUrl();
             // return config('app.url') . '/' . Filament::getDefaultPanel()->getPath();
         }
-        return (string)$this->evaluate($this->homeRoute);
+
+        return (string) $this->evaluate($this->homeRoute);
     }
 
     /**
@@ -208,10 +212,10 @@ class SocialmentPlugin implements Plugin
     public function isMultiPanel(): bool
     {
         // 'Guess' what setting this should be if it's not explicitly set.
-        if ($this->multiPanel === null)
+        if ($this->multiPanel === null) {
             return count(Filament::getPanels()) > 1;
+        }
 
         return $this->multiPanel;
     }
-
 }
