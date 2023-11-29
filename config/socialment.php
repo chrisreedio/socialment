@@ -25,6 +25,11 @@ return [
         'home' => 'filament.admin.pages.dashboard',
     ],
 
+    'spa' => [
+        // The URL to redirect to after a successful login
+        'home' => env('SPA_URL', 'http://localhost:3000'),
+    ],
+
     'models' => [
         // If you want to use a custom user model, you can specify it here.
         'user' => \App\Models\User::class,

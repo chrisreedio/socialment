@@ -14,7 +14,7 @@
         @foreach ($providers as $providerName => $provider)
             @php
                 $providerUrl = $multiPanel
-                    ? route('socialment.panel.redirect', ['panelId' => $panelId, 'provider' => $providerName])
+                    ? route('socialment.redirect.panel', ['panelId' => $panelId, 'provider' => $providerName])
                     : route('socialment.redirect', $providerName);
             @endphp
             <a class='ring-2 ring-slate-700/50 hover:ring-slate-600/70 transition-all rounded-lg px-4 py-3 flex gap-2 items-center'

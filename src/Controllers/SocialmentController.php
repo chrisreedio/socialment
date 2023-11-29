@@ -9,7 +9,9 @@ use Exception;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use JetBrains\PhpStorm\NoReturn;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
@@ -24,13 +26,6 @@ class SocialmentController extends Controller
     use AuthorizesRequests;
     use ValidatesRequests;
 
-    public function panelRedirect(string $panelId, string $provider): RedirectResponse
-    {
-        request()->session()->put('socialment.auth.panel', $panelId);
-
-        return Socialite::driver($provider)->redirect();
-    }
-
     public function redirect(string $provider): RedirectResponse
     {
         request()->session()->put('socialment.auth.panel', Filament::getDefaultPanel()->getId());
@@ -38,9 +33,32 @@ class SocialmentController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
+    public function redirectSpa(string $provider): RedirectResponse
+    {
+        // Store the referring url in the session
+        // request()->session()->put('socialment.intended.url', request()->headers->get('referer'));
+        // TODO - Optionally also store the referer so they can go back to where they were
+        request()->session()->put('socialment.intended.guard', 'spa');
+
+        return Socialite::driver($provider)->redirect();
+    }
+
+    public function redirectPanel(string $panelId, string $provider): RedirectResponse
+    {
+        request()->session()->put('socialment.auth.panel', $panelId);
+
+        return Socialite::driver($provider)->redirect();
+    }
+
     public function callback(string $provider): RedirectResponse
     {
+        $spaUrl = config('socialment.spa.home');
         $panelId = request()->session()->pull('socialment.auth.panel');
+        // If we have a redirect URL use that before a redirect route
+        $intendedUrl = request()->session()->pull('socialment.intended.url');
+        $intendedGuard = request()->session()->pull('socialment.intended.guard');
+        // dump('Panel: ' . $panelId);
+
         $panel = Filament::getPanel($panelId);
 
         $fallbackLoginRoute = 'filament.' . ($panelId ?? 'admin') . '.auth.login';
@@ -51,7 +69,6 @@ class SocialmentController extends Controller
             $plugin = $panel->getPlugin('socialment');
         } catch (Exception $e) {
             Session::flash('socialment.error', $e->getMessage());
-
             // return redirect()->route($fallbackLoginRoute);
             return redirect()->to(Filament::getDefaultPanel()->getLoginUrl());
         }
@@ -111,13 +128,22 @@ class SocialmentController extends Controller
 
             $plugin->executePreLogin($connectedAccount);
 
-            auth()->login($connectedAccount->user);
+            $authGuard = $intendedGuard ?? config('auth.defaults.guard');
+            Auth::guard($authGuard)->login($connectedAccount->user);
 
             $plugin->executePostLogin($connectedAccount);
 
-            $intendedUrl = request()->session()->pull('socialment.url.intended', $homeRoute);
+            // Redirect to the intended URL if it exists
+            if ($intendedUrl) {
+                return redirect()->to($intendedUrl);
+            }
 
-            return redirect()->route($intendedUrl);
+            if ($intendedGuard === 'spa') {
+                return redirect()->to($spaUrl);
+            }
+
+            // Fallback to the configured home route
+            return redirect()->route($homeRoute);
         } catch (InvalidStateException $e) {
             Session::flash('socialment.error', 'Something went wrong. Please try again.');
 
