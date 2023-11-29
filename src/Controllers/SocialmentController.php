@@ -9,13 +9,12 @@ use Exception;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Support\Facades\Auth;
-use JetBrains\PhpStorm\NoReturn;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use function config;
 use function redirect;
@@ -69,6 +68,7 @@ class SocialmentController extends Controller
             $plugin = $panel->getPlugin('socialment');
         } catch (Exception $e) {
             Session::flash('socialment.error', $e->getMessage());
+
             // return redirect()->route($fallbackLoginRoute);
             return redirect()->to(Filament::getDefaultPanel()->getLoginUrl());
         }
