@@ -18,5 +18,4 @@ Route::middleware(['web'])->group(function () {
     Route::get('/login/{provider}/callback', [SocialmentController::class, 'callback'])
         ->name('socialment.callback');
 
-
 });
