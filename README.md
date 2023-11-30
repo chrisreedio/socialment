@@ -220,6 +220,7 @@ You may configure pre/post login hooks/callbacks by adding code similar to the f
 
 ```php
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
+use SocialiteProviders\Manager\OAuth2\User as SocialiteUser;
 
 public function boot(): void
 {
@@ -239,6 +240,11 @@ public function boot(): void
 			'connectedAccount' => $connectedAccount,
 		]);
 	});
+
+    // Pre User Creation Hook
+    Socialment::preUserCreation(function (SocialiteUser $user) {
+        // Handle custom pre user creation logic here.
+    });
 }
 ```
 
