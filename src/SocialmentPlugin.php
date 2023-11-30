@@ -9,6 +9,7 @@ use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use SocialiteProviders\Manager\OAuth2\User as SocilateUser;
 
 use function array_merge;
 use function config;
@@ -24,6 +25,9 @@ class SocialmentPlugin implements Plugin
 
     /** @var array<Closure> */
     public array $postLoginCallbacks = [];
+
+    /** @var array<Closure> */
+    public array $preUserCreationCallbacks = [];
 
     protected string $loginRoute = 'filament.admin.auth.login';
 
@@ -156,6 +160,24 @@ class SocialmentPlugin implements Plugin
     {
         foreach ($this->postLoginCallbacks as $callback) {
             ($callback)($account);
+        }
+    }
+
+    public function preUserCreation(Closure $callback): static
+    {
+        // config()->set('socialment.post_login', $callback);
+        $this->preUserCreationCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Executes the pre user creation callback. Set up closure to execute via the preUserCreation method.
+     */
+    public function executePreUserCreation(SocialiteUser $user): void
+    {
+        foreach ($this->preUserCreationCallbacks as $callback) {
+            ($callback)($user);
         }
     }
 
