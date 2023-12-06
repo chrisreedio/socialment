@@ -10,8 +10,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-use function dd;
-
 class SpaAuthentication
 {
     /**
