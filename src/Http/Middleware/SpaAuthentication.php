@@ -2,13 +2,13 @@
 
 namespace ChrisReedIO\Socialment\Http\Middleware;
 
-
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+
 use function dd;
 
 class SpaAuthentication
@@ -16,11 +16,9 @@ class SpaAuthentication
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure(Request): (Response|RedirectResponse) $next
-     * @return Response|RedirectResponse|JsonResponse
+     * @param  Closure(Request): (Response|RedirectResponse)  $next
      */
-    public function handle(Request $request, Closure $next): Response|RedirectResponse|JsonResponse
+    public function handle(Request $request, Closure $next): Response | RedirectResponse | JsonResponse
     {
         $spaLoggedIn = Auth::guard('spa')->check();
 
@@ -35,7 +33,7 @@ class SpaAuthentication
         //     );
 
         // dd("SPA LOGGED IN: " . ($spaLoggedIn ? "TRUE" : "FALSE"));
-        if (!Auth::guard('spa')->check()) {
+        if (! Auth::guard('spa')->check()) {
             // Log::error('Spa 401!', [
             // 	'request' => $request->all(),
             // 	'response' => $response,
