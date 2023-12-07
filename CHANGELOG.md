@@ -5,6 +5,19 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v3.4.1 - 2023-11-16
+
+### What's Changed
+
+- Fixes Test Workflow - Updated Minimum Dependency Versions by @chrisreedio in https://github.com/chrisreedio/socialment/pull/32
+- hot fix for github provider for nullable names by @atmonshi in https://github.com/chrisreedio/socialment/pull/35
+
+### New Contributors
+
+- @atmonshi made their first contribution in https://github.com/chrisreedio/socialment/pull/35
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.4.0...v3.4.1
+
 ## v3.4.0 - 2023-11-02
 
 ### What's Changed

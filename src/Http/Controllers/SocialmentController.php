@@ -81,7 +81,7 @@ class SocialmentController extends BaseController
                 // Create a new user if one doesn't exist
                 $user = $userModel::where('email', $socialUser->getEmail())->first()
                     ?? $userModel::create([
-                        'name' => $socialUser->getName(),
+                        'name' => $socialUser->getName() ?? $socialUser->getNickname(),
                         'email' => $socialUser->getEmail(),
                     ]);
 
