@@ -1,35 +1,58 @@
 <?php
 
-namespace ChrisReedIO\Socialment\Controllers;
+namespace ChrisReedIO\Socialment\Http\Controllers;
 
 use ChrisReedIO\Socialment\Exceptions\AbortedLoginException;
 use ChrisReedIO\Socialment\Facades\Socialment;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
-use ChrisReedIO\Socialment\SocialmentPlugin;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller;
+use Exception;
+use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use JetBrains\PhpStorm\Deprecated;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class SocialmentController extends Controller
+use function config;
+use function redirect;
+use function request;
+
+class SocialmentController extends BaseController
 {
-    use AuthorizesRequests;
-    use ValidatesRequests;
-
-    public function redirect(string $provider)
+    /**
+     * @deprecated All panel redirects go through the redirectPanel method now
+     */
+    public function redirect(string $provider): RedirectResponse
     {
         return Socialite::driver($provider)->redirect();
     }
 
-    public function callback(string $provider)
+    public function redirectSpa(string $provider): RedirectResponse
     {
-        /** @var SocialmentPlugin $plugin */
-        $plugin = Socialment::getFacadeRoot();
+        // Store the referring url in the session
+        request()->session()->put('socialment.intended.url', request()->headers->get('referer'));
+
+        return Socialite::driver($provider)->redirect();
+    }
+
+    public function redirectPanel(string $provider, string $panelId): RedirectResponse
+    {
+        $referer = request()->headers->get('referer');
+        if (! request()->session()->exists('socialment.intended.url')) {
+            request()->session()->put('socialment.intended.url', $referer);
+        }
+
+        return Socialite::driver($provider)->redirect();
+    }
+
+    public function callback(string $provider): RedirectResponse
+    {
+        // If we have a redirect URL use that before a redirect route
+        $intendedUrl = request()->session()->pull('socialment.intended.url');
 
         try {
-            /** @var \SocialiteProviders\Manager\OAuth2\User */
+            /** @var \SocialiteProviders\Manager\OAuth2\User $socialUser */
             $socialUser = Socialite::driver($provider)->user();
 
             $userModel = config('socialment.models.user');
@@ -40,7 +63,6 @@ class SocialmentController extends Controller
             };
 
             // Create a user or log them in...
-            /** @var ConnectedAccount */
             $connectedAccount = ConnectedAccount::firstOrNew([
                 'provider' => $provider,
                 'provider_user_id' => $socialUser->getId(),
@@ -78,23 +100,35 @@ class SocialmentController extends Controller
                 ]);
             }
 
-            $plugin->executePreLogin($connectedAccount);
+            Socialment::executePreLogin($connectedAccount);
 
-            auth()->login($connectedAccount->user);
+            Auth::login($connectedAccount->user);
 
-            $plugin->executePostLogin($connectedAccount);
+            Socialment::executePostLogin($connectedAccount);
 
-            // TODO - Move this config paramater to a 'getHomeRoute' method on the plugin
-            return redirect()->route(config('socialment.routes.home'));
+            // Redirect to the intended URL if it exists
+            if ($intendedUrl) {
+                return redirect()->to($intendedUrl);
+            }
+
+            // Fallback to the default login url (which will take us to the right place since we're logged in)
+            return redirect()->to(Filament::getLoginUrl());
         } catch (InvalidStateException $e) {
-            return redirect()->route($plugin->getLoginRoute());
+            Session::flash('socialment.error', 'Something went wrong. Please try again.');
+
+            return redirect()->to($intendedUrl);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            // TODO - Log this exception
-            return redirect()->route($plugin->getLoginRoute());
+            Session::flash('socialment.error', 'We had a problem contacting the authentication server. Please try again.');
+
+            return redirect()->to($intendedUrl);
         } catch (AbortedLoginException $e) {
             Session::flash('socialment.error', $e->getMessage());
 
-            return redirect()->route($plugin->getLoginRoute());
+            return redirect()->to($intendedUrl);
+        } catch (Exception $e) {
+            Session::flash('socialment.error', 'An unknown error occurred: ' . $e->getMessage() . '. Please try again.');
+
+            return redirect()->to($intendedUrl);
         }
     }
 }

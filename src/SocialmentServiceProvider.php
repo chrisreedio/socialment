@@ -7,6 +7,7 @@ use Filament\Support\Assets\Asset;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Route;
 use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -62,6 +63,28 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        Route::macro('spaAuth', function (string $prefix = 'spa') {
+            $namePrefix = 'socialment.spa.';
+            $namePrefix .= ($prefix === 'spa') ? 'default.' : "{$prefix}.";
+
+            Route::middleware('web')
+                ->prefix($prefix)
+                ->as($namePrefix)
+                ->group(__DIR__ . '/../routes/spa.php');
+
+            // Now add this to the cors paths
+            config([
+                'cors.paths' => array_merge(config('cors.paths'), [
+                    "{$prefix}/*",
+                ]),
+            ]);
+
+            // Set the supports_credentials flag or the frontend can't send the goodies
+            config([
+                'cors.supports_credentials' => true,
+            ]);
+        });
+
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
