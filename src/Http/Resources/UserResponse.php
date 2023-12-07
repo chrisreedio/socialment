@@ -19,7 +19,9 @@ class UserResponse extends JsonResource
         return [
             // Not returning the id by default at this time for extra security
             // 'id' => $this->id,
+            /* @phpstan-ignore-next-line */
             'name' => $this->name,
+            /* @phpstan-ignore-next-line */
             'email' => $this->email,
             // 'avatar' => $this->avatar,
             // 'email_verified_at' => $this->email_verified_at,
