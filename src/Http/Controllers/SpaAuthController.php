@@ -6,6 +6,7 @@ use ChrisReedIO\Socialment\Http\Requests\SpaLoginRequest;
 use ChrisReedIO\Socialment\Http\Resources\UserResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 use function response;
 
 class SpaAuthController extends BaseController
@@ -16,7 +17,7 @@ class SpaAuthController extends BaseController
         $authSuccess = Auth::attempt($request->validated());
 
         // If the user is not found or the password is invalid, return an error
-        if (!$authSuccess) {
+        if (! $authSuccess) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 

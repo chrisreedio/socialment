@@ -65,7 +65,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
     {
         Route::macro('spaAuth', function (string $prefix = 'spa') {
             $namePrefix = 'socialment.spa.';
-            $namePrefix .= ($prefix === 'spa') ? "default." : "{$prefix}.";
+            $namePrefix .= ($prefix === 'spa') ? 'default.' : "{$prefix}.";
 
             Route::middleware('web')
                 ->prefix($prefix)

@@ -8,14 +8,12 @@ use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use Exception;
 use Filament\Facades\Filament;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+
 use function config;
 use function redirect;
 use function request;
