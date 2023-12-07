@@ -5,7 +5,7 @@ namespace ChrisReedIO\Socialment\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \ChrisReedIO\Socialment\Socialment
+ * @see \ChrisReedIO\Socialment\SocialmentPlugin
  */
 class Socialment extends Facade
 {

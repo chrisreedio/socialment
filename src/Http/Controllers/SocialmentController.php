@@ -1,8 +1,9 @@
 <?php
 
-namespace ChrisReedIO\Socialment\Controllers;
+namespace ChrisReedIO\Socialment\Http\Controllers;
 
 use ChrisReedIO\Socialment\Exceptions\AbortedLoginException;
+use ChrisReedIO\Socialment\Facades\Socialment;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use Exception;
@@ -15,19 +16,17 @@ use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
 use function config;
 use function redirect;
 use function request;
 
-class SocialmentController extends Controller
+class SocialmentController extends BaseController
 {
-    use AuthorizesRequests;
-    use ValidatesRequests;
-
     public function redirect(string $provider): RedirectResponse
     {
-        request()->session()->put('socialment.auth.panel', Filament::getDefaultPanel()->getId());
+        dd('normal redirect');
+        $defaultPanelId = Filament::getDefaultPanel()->getId();
+        request()->session()->put('socialment.auth.panel', $defaultPanelId);
 
         return Socialite::driver($provider)->redirect();
     }
@@ -35,15 +34,16 @@ class SocialmentController extends Controller
     public function redirectSpa(string $provider): RedirectResponse
     {
         // Store the referring url in the session
-        // request()->session()->put('socialment.intended.url', request()->headers->get('referer'));
-        // TODO - Optionally also store the referer so they can go back to where they were
-        request()->session()->put('socialment.intended.guard', 'spa');
+        // dd('referer: ' . request()->headers->get('referer'));
+        request()->session()->put('socialment.intended.url', request()->headers->get('referer'));
+        // dd(request()->path());
 
         return Socialite::driver($provider)->redirect();
     }
 
     public function redirectPanel(string $panelId, string $provider): RedirectResponse
     {
+        dd('panel redirect');
         request()->session()->put('socialment.auth.panel', $panelId);
 
         return Socialite::driver($provider)->redirect();
@@ -51,12 +51,11 @@ class SocialmentController extends Controller
 
     public function callback(string $provider): RedirectResponse
     {
+        $globalPlugin = app(SocialmentPlugin::class);
         $spaUrl = config('socialment.spa.home');
         $panelId = request()->session()->pull('socialment.auth.panel');
         // If we have a redirect URL use that before a redirect route
         $intendedUrl = request()->session()->pull('socialment.intended.url');
-        $intendedGuard = request()->session()->pull('socialment.intended.guard');
-        // dump('Panel: ' . $panelId);
 
         $panel = Filament::getPanel($panelId);
 
@@ -66,6 +65,7 @@ class SocialmentController extends Controller
         try {
             /** @var SocialmentPlugin $plugin */
             $plugin = $panel->getPlugin('socialment');
+            // $plugin = app(SocialmentPlugin::class);
         } catch (Exception $e) {
             Session::flash('socialment.error', $e->getMessage());
 
@@ -126,20 +126,18 @@ class SocialmentController extends Controller
                 ]);
             }
 
-            $plugin->executePreLogin($connectedAccount);
+            // dd('prelogin in socialment')
+            // dd($plugin);
+            // $plugin->executePreLogin($connectedAccount);
+            Socialment::executePreLogin($connectedAccount);
 
-            $authGuard = $intendedGuard ?? config('auth.defaults.guard');
-            Auth::guard($authGuard)->login($connectedAccount->user);
+            Auth::login($connectedAccount->user);
 
             $plugin->executePostLogin($connectedAccount);
 
             // Redirect to the intended URL if it exists
             if ($intendedUrl) {
                 return redirect()->to($intendedUrl);
-            }
-
-            if ($intendedGuard === 'spa') {
-                return redirect()->to($spaUrl);
             }
 
             // Fallback to the configured home route
@@ -157,6 +155,7 @@ class SocialmentController extends Controller
 
             return redirect()->route($loginRoute);
         } catch (Exception $e) {
+            throw $e;
             Session::flash('socialment.error', 'An unknown error occurred: ' . $e->getMessage() . '. Please try again.');
 
             return redirect()->route($loginRoute);
