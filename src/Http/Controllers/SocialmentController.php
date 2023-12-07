@@ -5,7 +5,6 @@ namespace ChrisReedIO\Socialment\Http\Controllers;
 use ChrisReedIO\Socialment\Exceptions\AbortedLoginException;
 use ChrisReedIO\Socialment\Facades\Socialment;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
-use ChrisReedIO\Socialment\SocialmentPlugin;
 use Exception;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +39,7 @@ class SocialmentController extends BaseController
     public function redirectPanel(string $provider, string $panelId): RedirectResponse
     {
         $referer = request()->headers->get('referer');
-        if (!request()->session()->exists('socialment.intended.url')) {
+        if (! request()->session()->exists('socialment.intended.url')) {
             request()->session()->put('socialment.intended.url', $referer);
         }
 
