@@ -10,6 +10,7 @@ use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use SocialiteProviders\Manager\OAuth2\User as SocilateUser;
 
 use function array_merge;
 use function config;
@@ -29,6 +30,11 @@ class SocialmentPlugin implements Plugin
     public array $postLoginCallbacks = [];
 
     public static array $globalPostLoginCallbacks = [];
+
+    /** @var array<Closure> */
+    public array $postSocialiteCallbacks = [];
+
+    public static array $globalPostSocialiteCallbacks = [];
 
     protected ?string $loginRoute = null;
 
@@ -162,6 +168,11 @@ class SocialmentPlugin implements Plugin
         self::$globalPostLoginCallbacks[] = $callback;
     }
 
+    public static function globalPostSocialite(Closure $callback): void
+    {
+        self::$globalPostSocialiteCallbacks[] = $callback;
+    }
+
     /**
      * Sets up a callback to be called before a user is logged in.
      * This is useful if you wish to check a user's roles before allowing them to login.
@@ -209,6 +220,27 @@ class SocialmentPlugin implements Plugin
     {
         foreach ($this->postLoginCallbacks as $callback) {
             ($callback)($account);
+        }
+    }
+
+    /**
+     * Sets up a callback to be called after successful socialite login
+     * Throw a Socialment\Exceptions\AbortedLoginException to abort the login.
+     */
+    public function postSocialite(Closure $callback): static
+    {
+        $this->postSocialiteCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Executes the post Socialite callback. Set up closure to execute via the postSocialite method.
+     */
+    public function executePostSocialite(SocilateUser $user): void
+    {
+        foreach ($this->postSocialiteCallbacks as $callback) {
+            ($callback)($user);
         }
     }
 
