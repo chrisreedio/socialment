@@ -10,6 +10,7 @@ use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use Laravel\Socialite\Two\AbstractProvider;
 
 use function array_merge;
 use function config;
@@ -19,6 +20,8 @@ class SocialmentPlugin implements Plugin
     use EvaluatesClosures;
 
     public bool | Closure | null $visible = null;
+
+    public ?Closure $redirectCallback = null;
 
     /** @var array<Closure> */
     public array $preLoginCallbacks = [];
@@ -43,6 +46,16 @@ class SocialmentPlugin implements Plugin
     public function getId(): string
     {
         return 'socialment';
+    }
+
+    public function redirect(Closure $callback) {
+        $this->redirectCallback = $callback;
+
+        return $this;
+    }
+
+    public function executeRedirectCallback(AbstractProvider $provider) {
+        return ($this->redirectCallback)($provider);
     }
 
     public function register(Panel $panel): void

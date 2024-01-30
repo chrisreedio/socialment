@@ -42,8 +42,8 @@ class SocialmentController extends BaseController
         if (! request()->session()->exists('socialment.intended.url')) {
             request()->session()->put('socialment.intended.url', $referer);
         }
-
-        return Socialite::driver($provider)->redirect();
+        
+        return Socialment::executeRedirectCallback(Socialite::driver($provider))->redirect();
     }
 
     public function callback(string $provider): RedirectResponse
