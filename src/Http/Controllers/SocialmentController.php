@@ -43,7 +43,7 @@ class SocialmentController extends BaseController
             request()->session()->put('socialment.intended.url', $referer);
         }
         
-        return Socialment::executeRedirectCallback(Socialite::driver($provider))->redirect();
+        return Socialment::resolveRedirectCallback($provider, Socialite::driver($provider))->redirect();
     }
 
     public function callback(string $provider): RedirectResponse
