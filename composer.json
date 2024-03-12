@@ -25,16 +25,16 @@
     "require": {
         "php": "^8.1",
         "filament/filament": "^3.0",
-        "illuminate/contracts": "^10.0",
+        "illuminate/contracts": "^10.0|^11.0",
         "laravel/socialite": "^5.8",
         "owenvoke/blade-fontawesome": "^2.4",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",
+        "larastan/larastan": "^2.9",
         "laravel/pint": "^1.13",
         "nunomaduro/collision": "^7.10",
-        "nunomaduro/larastan": "^2.1.1",
         "orchestra/testbench": "^8.11",
         "pestphp/pest": "^2.10",
         "pestphp/pest-plugin-arch": "^2.0",
