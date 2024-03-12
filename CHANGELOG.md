@@ -5,6 +5,32 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v3.5.0 - 2024-03-12
+
+### SPA Support
+
+This feature is still experimental and a work in progress. Use at your own risk.
+
+### Configuration Deprecations
+
+Support for configuring providers via the configuration file has been deprecated in favor of the configuring the providers via the panel provider.
+
+Configuring options at the panel level allows for far better multi-panel support among many other improvements.
+
+### Laravel 11 Support
+
+This package should now work with Laravel 11 projects! 🚀
+
+### What's Changed
+
+* Save Previous Panel URL for after Login by @chrisreedio in https://github.com/chrisreedio/socialment/pull/34
+* Bump aglipanci/laravel-pint-action from 2.3.0 to 2.3.1 by @dependabot in https://github.com/chrisreedio/socialment/pull/39
+* Bump ramsey/composer-install from 2 to 3 by @dependabot in https://github.com/chrisreedio/socialment/pull/41
+* SPA Documentation Improvements by @chrisreedio in https://github.com/chrisreedio/socialment/pull/44
+* Laravel 11 Support by @chrisreedio in https://github.com/chrisreedio/socialment/pull/45
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.4.1...v3.5.0
+
 ## v3.4.1 - 2023-11-16
 
 ### What's Changed
