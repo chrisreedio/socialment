@@ -34,7 +34,7 @@
         "barryvdh/laravel-ide-helper": "^2.13",
         "larastan/larastan": "^2.9",
         "laravel/pint": "^1.13",
-        "nunomaduro/collision": "^7.10",
+        "nunomaduro/collision": "^7.10|^8.0",
         "orchestra/testbench": "^v8.14|^9.0",
         "pestphp/pest": "^2.10",
         "pestphp/pest-plugin-arch": "^2.0",
