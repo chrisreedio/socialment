@@ -103,6 +103,13 @@ $panel
 
 ##### Socialment Configuration
 
+###### Provider Configuration
+
+> [!WARNING]
+> This method of provider configuration is now deprecated and will be removed in a future release.
+> 
+> Configuring providers in your panel configuration has many advantages and is the recommended method.
+
 Whether you're using the default providers or adding your own, you'll need to configure them in the `socialment.php`
 config file.
 
@@ -124,7 +131,7 @@ Providers specified in the config file are global across all panels.
 
 ##### Per-Panel Provider Configuration
 
-You may also specify providers on a per-panel basis. To do this use the `->registerProvider` method on the plugin.
+You should specify providers on a per-panel basis. To do this use the `->registerProvider` method on the plugin.
 
 ```php
 $panel->plugins([
@@ -195,8 +202,6 @@ The `usage` section can usually be ignored as that is the main part this package
 >
 > This will allow for customized handling on a per provider, per application basis.
 
-
-
 This package also uses the [Blade Font Awesome package](https://github.com/owenvoke/blade-fontawesome)
 by [Owen Voke](https://github.com/owenvoke).
 
@@ -234,21 +239,22 @@ use ChrisReedIO\Socialment\Models\ConnectedAccount;
 public function boot(): void
 {
     // Post Login Hook
-	Socialment::preLogin(function (ConnectedAccount $connectedAccount) {
-		// Handle custom pre login logic here.
-	});
-	// Multiple hooks can be added
-	Socialment::preLogin(function (ConnectedAccount $connectedAccount) {
-		// Handle additional custom pre login logic here if you need.
-	});
+    Socialment::preLogin(function (ConnectedAccount $connectedAccount) {
+        // Handle custom pre login logic here.
+    });
+    
+    // Multiple hooks can be added
+    Socialment::preLogin(function (ConnectedAccount $connectedAccount) {
+        // Handle additional custom pre login logic here if you need.
+    });
 
     // Post Login Hook
-	Socialment::postLogin(function (ConnectedAccount $connectedAccount) {
-		// Handle custom post login logic here.
-		Log::info('User logged in with ' . $connectedAccount->provider . ' account', [
-			'connectedAccount' => $connectedAccount,
-		]);
-	});
+    Socialment::postLogin(function (ConnectedAccount $connectedAccount) {
+        // Handle custom post login logic here.
+        Log::info('User logged in with ' . $connectedAccount->provider . ' account', [
+            'connectedAccount' => $connectedAccount,
+        ]);
+    });
 }
 ```
 
@@ -287,25 +293,32 @@ This is the contents of the published config file:
 
 ```php
 return [
-	'view' => [
-		// Set the text above the provider list
+    'view' => [
+        // Set the text above the provider list
         'prompt' => 'Or Login Via',
-		// Or change out the view completely with your own
-		'providers-list' => 'socialment::providers-list',
-	],
-	'routes' => [
-		'home' => 'filament.admin.pages.dashboard',
-	],
-	'models' => [
-		// If you want to use a custom user model, you can specify it here.
-		'user' => \App\Models\User::class,
-	],
-	'providers' => [
+        // Or change out the view completely with your own
+        'providers-list' => 'socialment::providers-list',
+    ],
+    
+    // DEPRECATED: This will be removed in a future version.
+    // Configure routes via the panel provider.
+    'routes' => [
+        'home' => 'filament.admin.pages.dashboard',
+    ],
+    
+    'models' => [
+        // If you want to use a custom user model, you can specify it here.
+        'user' => \App\Models\User::class,
+    ],
+    
+    // DEPRECATED: This will be removed in a future version.
+    // Configure providers via the panel provider.
+    'providers' => [
         'azure' => [
-        	'icon' => 'fab-microsoft',
-        	'label' => 'Azure Active Directory',
+            'icon' => 'fab-microsoft',
+            'label' => 'Azure Active Directory',
         ]
-	],
+    ],
 ];
 ```
 
@@ -313,134 +326,50 @@ return [
 
 > [!CAUTION]
 > This feature is still in development and thus highly experimental.
+> 
 > Expect breaking changes and bugs. Use at your own risk.
+> 
+> The documentation will be updated as the feature is finalized.
+> 
+> This feature may be spun off into a separate package in the future.
+
+This package includes support for authenticating with a Single Page Application (SPA) frontend. Both the Filament backend and SPA frontend must be hosted on the same domain. 
+
+The login session is shared so logging into either the SPA or the backend will log you into both. 
+
+Special CORS and session settings are required to make this work and caution must be taken to ensure that proper access controls (Policies / Panel Access / Etc) are in place.
 
 ### Setup
 
-A new guard, `spa` is added to your `config/auth.php` file.
-
-In the future, this will be configurable but for now, you must use the `spa` guard.
+You'll need to add the new `spaAuth` routes to your `routes/web` file.
 
 ```php
-    'guards' => [
-        // ... Other Guards
-        'spa' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-    ],
+// In this example, we pass 'dashboard' as the SPA route name.
+// We'll want to make sure the 'prefix' our custom routes match.
+// If no prefix is set/passed to spaAuth, the default is 'spa'.
+
+Route::spaAuth('dashboard');
+
+Route::middleware('auth:sanctum')
+    ->prefix('dashboard')
+    ->as('dashboard.')
+    ->group(function () {
+        // Custom Routes
+    });
 ```
-
-You may configure the `spa` guard to use a different provider if you wish.
-
-You'll need to create a new `spa` routes file in your `routes` directory.
-
-```php
-<?php
-
-use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Route;
-use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
-
-// Custom SPA specific route for getting a CSRF cookie
-Route::get('sanctum/csrf-cookie', [CsrfCookieController::class, 'show'])->name('csrf-cookie');
-// Local Account Login from the SPA
-Route::post('login', [AuthController::class, 'login'])->name('login');
-
-// Routes that require authentication go in here
-Route::middleware(['spa.auth'])->group(function () {
-    // Logs out the currently authenticated SPA User (local or social)
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-    // Returns information about the currently logged-in user, 401 if not logged in
-    Route::get('me', [AuthController::class, 'me'])->name('me');
-});
-```
-A few notes about the above code. 
-
-If you're SPA is minimal you may not need most (if any) of the above routes.
-
-The routes targeting the `AuthController` are only for 'local user' (non-social) authentication.
-
-### Middleware
-
-The `spa.auth` middleware is provided by this package and will ensure that the user is authenticated via the `spa` guard.
-
-Speaking of Middleware, if using the `spa/csrf-cookie` and `spa/login` routes above, you'll need to modify your `VerifyCsrfToken` middleware to exclude these routes.
-
-```php
-    protected $except = [
-        'spa/sanctum/csrf-cookie',
-        'spa/login',
-    ];
-```
-
-Ensure that in your `app/Http/Kernel.php` you add the `spa` middleware group to the `$middlewareGroups` array:
-
-```php
-    protected $middlewareGroups = [
-        // ... Usually api and web middleware groups are here
-        'spa' => [
-            \App\Http\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ],
-    ];
-```
-
-One more thing while you're in the `app/Http/Kernel.php` file. You'll need to add the `spa.auth` middleware alias to the `$middlewareAliases` array:
-
-```php
-    protected $middlewareAliases = [
-        // ... Other Aliases
-        'spa.auth' => \ChrisReedIO\Socialment\Http\Middleware\SpaAuthentication::class,
-    ];
-```
-
-Now open your `RouteServiceProvider` and add the following to the `routes` in the  `boot` method:
-
-```php
-    public function boot(): void
-    {
-        $this->routes(function () {
-            // ... Other Route Files
-            Route::middleware('spa')
-                ->prefix('spa')
-                ->as('spa.')
-                ->group(base_path('routes/spa.php'));        
-        });
-    }
-```
-
-This will be configurable in the future but for now, you must use the `spa` prefix.
 
 ### Configuration Changes
 
-You'll need to add the new guard to your app's `config/auth.php` file:
+You'll need to modify the `config/cors.php` file. 
 
-```php
-    'guards' => [
-        // ... Other Guards
-        'spa' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-    ],
-```
-
-Next is the `config/cors.php` file. You'll need to add the following to the `paths` array:
+You'll need to add the following to the `paths` array:
 
 ```php
     'paths' => [
         // ... Other Paths
-        'spa/*',
+        'spa/*', // OR use the custom prefix you set in the routes/web file.
     ],
 ```
-
-The `allowed_origins` has been configured for testing but this may not actually need to be set. I'll update this
-section once final testing is complete.
 
 Also ensure that the `supports_credentials` is set to `true`:
 
@@ -448,16 +377,8 @@ Also ensure that the `supports_credentials` is set to `true`:
     'supports_credentials' => true,
 ```
 
-For the final config file change, open `sanctum.php` and ensure that the `guard` array includes the `spa` guard:
-
-```php
-    'guard' => [
-        // ... Other Guards
-        'spa',
-    ],
-```
-
 ### Environment Variables
+
 We need to set a few ENV variables to ensure that the SPA authentication works properly.
 
 ```dotenv
@@ -473,7 +394,7 @@ The `SPA_URL` is the URL of your SPA application.
 
 > [!NOTE]
 > Ths SPA functionality is a work in progress and is subject to change.
-> 
+>
 > This documentation section will be updated as the feature is finalized.
 
 ## Testing
