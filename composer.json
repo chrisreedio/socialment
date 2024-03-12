@@ -31,7 +31,7 @@
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.13",
+        "barryvdh/laravel-ide-helper": "^2.13|^3.0",
         "larastan/larastan": "^2.9",
         "laravel/pint": "^1.13",
         "nunomaduro/collision": "^7.10|^8.0",
