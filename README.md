@@ -108,7 +108,7 @@ $panel
 > [!WARNING]
 > This method of provider configuration is now deprecated and will be removed in a future release.
 > 
-> Configuring providers in your panel configuration has many advantages and is the recommended method.
+> Configuring providers in your [panel configuration](#per-panel-provider-configuration) has many advantages and is the recommended method.
 
 Whether you're using the default providers or adding your own, you'll need to configure them in the `socialment.php`
 config file.
