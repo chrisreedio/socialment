@@ -36,7 +36,7 @@ return [
         'responses' => [
             // Replace with your own JsonResource class if you want to customize the response
             'me' => ChrisReedIO\Socialment\Http\Resources\UserResponse::class,
-        ]
+        ],
     ],
 
     'models' => [

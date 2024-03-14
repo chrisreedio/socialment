@@ -55,6 +55,7 @@ class SpaAuthController extends BaseController
     public function me()
     {
         $resourceClass = config('socialment.spa.responses.me', UserResponse::class);
+
         return new $resourceClass(Auth::user());
     }
 }
