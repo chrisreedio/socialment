@@ -1,6 +1,7 @@
 <?php
 
 // config for ChrisReedIO/Socialment
+
 return [
     // The list of providers to display on the login page
     // You must install the appropriate Socialite provider package for each provider you want to use
@@ -32,6 +33,10 @@ return [
     'spa' => [
         // The URL to redirect to after a successful login
         'home' => env('SPA_URL', 'http://localhost:3000'),
+        'responses' => [
+            // Replace with your own JsonResource class if you want to customize the response
+            // 'me' => \ChrisReedIO\Socialment\Http\Resources\UserResponse::class,
+        ],
     ],
 
     'models' => [

@@ -31,11 +31,11 @@
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.13",
+        "barryvdh/laravel-ide-helper": "^2.13|^3.0",
         "larastan/larastan": "^2.9",
         "laravel/pint": "^1.13",
-        "nunomaduro/collision": "^7.10",
-        "orchestra/testbench": "^8.11",
+        "nunomaduro/collision": "^7.10|^8.0",
+        "orchestra/testbench": "^v8.14|^9.0",
         "pestphp/pest": "^2.10",
         "pestphp/pest-plugin-arch": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
