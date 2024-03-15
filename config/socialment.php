@@ -35,7 +35,7 @@ return [
         'home' => env('SPA_URL', 'http://localhost:3000'),
         'responses' => [
             // Replace with your own JsonResource class if you want to customize the response
-            'me' => ChrisReedIO\Socialment\Http\Resources\UserResponse::class,
+            // 'me' => \ChrisReedIO\Socialment\Http\Resources\UserResponse::class,
         ],
     ],
 
