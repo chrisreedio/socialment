@@ -5,6 +5,15 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v3.6.0 - 2024-03-15
+
+### What's Changed
+
+* Allow for custom 'me' SPA response by @chrisreedio in https://github.com/chrisreedio/socialment/pull/47
+* Narrowed test matrix for CI runs by @chrisreedio in https://github.com/chrisreedio/socialment/pull/46
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.5.0...v3.6.0
+
 ## v3.5.0 - 2024-03-12
 
 ### SPA Support
