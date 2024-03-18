@@ -20,6 +20,8 @@ class SocialmentPlugin implements Plugin
 
     public bool | Closure | null $visible = null;
 
+    public ?Closure $createAccountUsing = null;
+
     /** @var array<Closure> */
     public array $preLoginCallbacks = [];
 
@@ -160,6 +162,24 @@ class SocialmentPlugin implements Plugin
     public static function globalPostLogin(Closure $callback): void
     {
         self::$globalPostLoginCallbacks[] = $callback;
+    }
+
+    public function createAccountUsing(Closure $callback): static
+    {
+        $this->createAccountUsing = $callback;
+
+        return $this;
+    }
+
+    public function hasCustomCreateAccount(): bool
+    {
+        return $this->createAccountUsing !== null;
+    }
+
+    public function executeCreateAccountUsing($user): mixed
+    {
+        $function = $this->createAccountUsing;
+        return $function($user);
     }
 
     /**

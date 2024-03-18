@@ -79,11 +79,15 @@ class SocialmentController extends BaseController
             if (! $connectedAccount->exists) {
                 // Check for an existing user with this email
                 // Create a new user if one doesn't exist
-                $user = $userModel::where('email', $socialUser->getEmail())->first()
-                    ?? $userModel::create([
-                        'name' => $socialUser->getName() ?? $socialUser->getNickname(),
-                        'email' => $socialUser->getEmail(),
-                    ]);
+                if (Socialment::hasCustomCreateAccount()) {
+                    $user = Socialment::executeCreateAccountUsing($socialUser);
+                } else {
+                    $user = $userModel::where('email', $socialUser->getEmail())->first()
+                        ?? $userModel::create([
+                            'name' => $socialUser->getName() ?? $socialUser->getNickname(),
+                            'email' => $socialUser->getEmail(),
+                        ]);
+                }
 
                 // Associate the user and save this connected account
                 $connectedAccount->user()->associate($user)->save();
