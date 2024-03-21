@@ -235,6 +235,8 @@ service provider:
 
 ```php
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
+use SocialiteProviders\Manager\OAuth2\User as SocialiteUser;
+use ChrisReedIO\Socialment\Exceptions\AbortedLoginException;
 
 public function boot(): void
 {
@@ -249,11 +251,19 @@ public function boot(): void
     });
 
     // Post Login Hook
-    Socialment::postLogin(function (ConnectedAccount $connectedAccount) {
-        // Handle custom post login logic here.
-        Log::info('User logged in with ' . $connectedAccount->provider . ' account', [
-            'connectedAccount' => $connectedAccount,
-        ]);
+	  Socialment::postLogin(function (ConnectedAccount $connectedAccount) {
+      // Handle custom post login logic here.
+      Log::info('User logged in with ' . $connectedAccount->provider . ' account', [
+        'connectedAccount' => $connectedAccount,
+      ]);
+	  });
+	
+    // Post Socialite Hook
+	  Socialment::postSocialite(function (SocialiteUser $user) {
+        $tid = json_decode(base64_decode(str_replace('_', '/', str_replace('-','+',explode('.', $user->token)[1]))))->tid;
+        if (!in_array($tid, explode(',', config('services.azure.allowed_tenants')))) {
+            throw new AbortedLoginException;
+        }
     });
 }
 ```

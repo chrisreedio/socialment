@@ -55,6 +55,8 @@ class SocialmentController extends BaseController
             /** @var \SocialiteProviders\Manager\OAuth2\User $socialUser */
             $socialUser = Socialite::driver($provider)->user();
 
+            Socialment::executePostSocialite($socialUser);
+
             $userModel = config('socialment.models.user');
 
             $tokenExpiration = match ($provider) {
