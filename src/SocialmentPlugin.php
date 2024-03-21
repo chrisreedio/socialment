@@ -10,6 +10,7 @@ use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use Laravel\Socialite\Two\AbstractProvider;
 
 use function array_merge;
 use function config;
@@ -45,12 +46,19 @@ class SocialmentPlugin implements Plugin
         return 'socialment';
     }
 
+    public function resolveRedirectCallback(string $driver, AbstractProvider $provider)
+    {
+        $providerConfig = app(Socialment::class)->getProvider($driver);
+
+        return $provider->scopes($providerConfig['scopes']);
+    }
+
     public function register(Panel $panel): void
     {
         $panel->renderHook('panels::auth.login.form.before', function () {
             $errorMessage = Session::get('socialment.error');
 
-            if (! $this->evaluate($this->visible) || ! $errorMessage) {
+            if (!$this->evaluate($this->visible) || !$errorMessage) {
                 return '';
             }
 
@@ -63,7 +71,7 @@ class SocialmentPlugin implements Plugin
         });
 
         $panel->renderHook('panels::auth.login.form.after', function () {
-            if (! $this->evaluate($this->visible)) {
+            if (!$this->evaluate($this->visible)) {
                 return '';
             }
 
@@ -212,12 +220,9 @@ class SocialmentPlugin implements Plugin
         }
     }
 
-    public function registerProvider(string $provider, string $icon, string $label): static
+    public function registerProvider(string $provider, string $icon, string $label, array $scopes = []): static
     {
-        $this->providers[$provider] = [
-            'icon' => $icon,
-            'label' => $label,
-        ];
+        app(Socialment::class)->registerProvider($provider, $icon, $label, $scopes);
 
         return $this;
     }
