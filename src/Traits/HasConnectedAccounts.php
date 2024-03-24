@@ -3,6 +3,7 @@
 namespace ChrisReedIO\Socialment\Traits;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use ChrisReedIO\Socialment\Models\ConnectedAccount;
 
 trait HasConnectedAccounts
 {
