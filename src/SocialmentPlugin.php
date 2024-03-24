@@ -30,9 +30,9 @@ class SocialmentPlugin implements Plugin
 
     public static array $globalPostLoginCallbacks = [];
 
-    protected ?string $loginRoute = null;
+    protected string | Closure | null  $loginRoute = null;
 
-    protected ?string $homeRoute = null;
+    protected string | Closure | null $homeRoute = null;
 
     protected array $providers = [];
 
@@ -102,7 +102,7 @@ class SocialmentPlugin implements Plugin
         return $plugin;
     }
 
-    public function visible(bool | Closure $visible): static
+    public function visible(bool | Closure | null $visible = null): static
     {
         $this->visible = $visible;
 
@@ -116,7 +116,7 @@ class SocialmentPlugin implements Plugin
         return $this;
     }
 
-    public function loginRoute(string | Closure $route): static
+    public function loginRoute(null | string | Closure $route = null): static
     {
         $this->loginRoute = $route;
 
@@ -134,7 +134,7 @@ class SocialmentPlugin implements Plugin
         return (string) $this->evaluate($this->loginRoute);
     }
 
-    public function homeRoute(string | Closure $route): static
+    public function homeRoute(null | string | Closure $route = null): static
     {
         $this->homeRoute = $route;
 
