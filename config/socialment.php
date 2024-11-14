@@ -37,6 +37,14 @@ return [
             // Replace with your own JsonResource class if you want to customize the response
             // 'me' => \ChrisReedIO\Socialment\Http\Resources\UserResponse::class,
         ],
+        'cookies' => [
+            'csrf' => [
+                'custom' => false, // Experimental
+                'name' => env('SOCIALMENT_SPA_CSRF_NAME', 'XSRF-TOKEN'),
+                'header' => env('SOCIALMENT_SPA_CSRF_HEADER', 'X-XSRF-TOKEN'),
+                'domain' => env('SOCIALMENT_SPA_DOMAIN', env('SESSION_DOMAIN')),
+            ],
+        ],
     ],
 
     'models' => [
