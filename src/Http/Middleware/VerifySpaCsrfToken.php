@@ -2,14 +2,12 @@
 
 namespace ChrisReedIO\Socialment\Http\Middleware;
 
-use Closure;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Cookie\CookieValuePrefix;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Response;
 
 class VerifySpaCsrfToken extends VerifyCsrfToken
 {
@@ -17,7 +15,6 @@ class VerifySpaCsrfToken extends VerifyCsrfToken
      * Get the CSRF token from the request.
      *
      * @param  Request  $request
-     * @return string|null
      */
     protected function getTokenFromRequest($request): ?string
     {
@@ -40,7 +37,6 @@ class VerifySpaCsrfToken extends VerifyCsrfToken
      *
      * @param  Request  $request
      * @param  array  $config
-     * @return Cookie
      */
     protected function newCookie($request, $config): Cookie
     {
@@ -60,8 +56,6 @@ class VerifySpaCsrfToken extends VerifyCsrfToken
 
     /**
      * Determine if the cookie contents should be serialized.
-     *
-     * @return bool
      */
     public static function serialized(): bool
     {

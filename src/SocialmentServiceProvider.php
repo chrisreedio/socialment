@@ -65,7 +65,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton(SocialmentPlugin::class, fn () => new SocialmentPlugin());
+        $this->app->singleton(SocialmentPlugin::class, fn () => new SocialmentPlugin);
 
         Route::macro('spaInit', function (string $prefix = 'spa') {
             $namePrefix = 'socialment.spa.';
@@ -115,7 +115,6 @@ class SocialmentServiceProvider extends PackageServiceProvider
             // $useCustomCsrf = config('socialment.spa.cookies.csrf.custom');
             // dd($useCustomCsrf);
 
-
             // $dashboardSpaMiddleware = [
             //     \Illuminate\Cookie\Middleware\EncryptCookies::class,
             //     \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
@@ -134,7 +133,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
             Route::middleware([SocialmentServiceProvider::$middlewareGroupName])
                 // ->prefix($prefix)
                 // ->as($namePrefix)
-                ->group(__DIR__.'/../routes/spa.php');
+                ->group(__DIR__ . '/../routes/spa.php');
 
             // Now add this to the cors paths
             // config([
@@ -159,7 +158,6 @@ class SocialmentServiceProvider extends PackageServiceProvider
             //         : VerifyCsrfToken::class,
             //     \Illuminate\Routing\Middleware\SubstituteBindings::class,
             // ]);
-
 
             // Apply 'dashboard_spa' group to any routes prefixed with '/dashboard'
             // Route::middleware('spa')
@@ -213,7 +211,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/socialment/{$file->getFilename()}"),
                 ], 'socialment-stubs');
@@ -221,7 +219,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
         }
 
         // Testing
-        Testable::mixin(new TestsSocialment());
+        Testable::mixin(new TestsSocialment);
     }
 
     protected function getAssetPackageName(): ?string
