@@ -2,36 +2,15 @@
 
 namespace ChrisReedIO\Socialment\Http\Middleware;
 
-use Illuminate\Contracts\Encryption\DecryptException;
-use Illuminate\Cookie\CookieValuePrefix;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Cookie;
 
+use function config;
+
 class VerifySpaCsrfToken extends VerifyCsrfToken
 {
-    /**
-     * Get the CSRF token from the request.
-     *
-     * @param  Request  $request
-     */
-    protected function getTokenFromRequest($request): ?string
-    {
-        $headerName = config('socialment.spa.cookies.csrf.header', 'X-XSRF-TOKEN');
-        $token = $request->input('_token') ?: $request->header($headerName);
-
-        if (! $token && $header = $request->header($headerName)) {
-            try {
-                $token = CookieValuePrefix::remove($this->encrypter->decrypt($header, static::serialized()));
-            } catch (DecryptException) {
-                $token = '';
-            }
-        }
-
-        return $token;
-    }
-
     /**
      * Create a new "XSRF-TOKEN" cookie that contains the CSRF token.
      *
@@ -50,7 +29,7 @@ class VerifySpaCsrfToken extends VerifyCsrfToken
             false,
             false,
             $config['same_site'] ?? null,
-            $config['partitioned'] ?? false
+            $config['partitioned'] ?? false,
         );
     }
 

@@ -41,7 +41,6 @@ return [
             'csrf' => [
                 'custom' => false, // Experimental
                 'name' => env('SOCIALMENT_SPA_CSRF_NAME', 'XSRF-TOKEN'),
-                'header' => env('SOCIALMENT_SPA_CSRF_HEADER', 'X-XSRF-TOKEN'),
                 'domain' => env('SOCIALMENT_SPA_DOMAIN', env('SESSION_DOMAIN')),
             ],
         ],
