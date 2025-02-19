@@ -24,28 +24,29 @@ test('createUser with createUserUsing callback', function (callable $callback) {
         'user' => User::factory()->has(ConnectedAccount::factory())->create(),
         'expectation' => User::factory()->create(),
     ],
-])->skip();
+]);
 
 test('createUser without createUserUsing callback', function (callable $callback) {
-    /** @var array{account: ConnectedAccount, is_user_exists: bool} $data */
+    /** @var array{account: ConnectedAccount, users_initial_count: int} $data */
     $data = $callback();
 
-    expect(User::count())->toBe(0);
+    expect(User::count())->toBe($data['users_initial_count']);
 
     $user = SocialmentPlugin::make()->createUser($data['account']);
 
-    expect($user->email === $data['account']->email)
-        ->toBe($data['is_user_exists'])
-        ->and(User::count())->toBe(1);
-
+    expect($user->email)
+        ->toBe($data['account']->email)
+        ->and($user->name)
+        ->toBe($data['account']->name)
+        ->and(User::count())->toBe($data['users_initial_count'] + 1);
 })->with([
     'new account model' => static fn () => [
-        'account' => new ConnectedAccount,
-        'is_user_exists' => false,
+        'account' => new ConnectedAccount(['name' => 'test', 'email' => 'test@test.com']),
+        'users_initial_count' => 0,
     ],
     'existing account model' => static fn () => [
         'account' => ConnectedAccount::factory()->for(User::factory())->create(),
-        'is_user_exists' => true,
+        'users_initial_count' => 1,
     ],
 ]);
 
