@@ -120,8 +120,26 @@ class SocialmentPlugin implements Plugin
         return $this;
     }
 
+    /**
+     * @param  class-string | Closure  $model
+     *
+     * @throws \Throwable
+     */
     public function userModel(string | Closure $model): static
     {
+        if (is_string($model)) {
+            try {
+                app($model);
+            } catch (\Exception) {
+                throw new \InvalidArgumentException("Target class [$model] does not exist");
+            }
+        }
+        throw_if(
+            condition: ! app($model) instanceof \Illuminate\Database\Eloquent\Model,
+            exception: 'InvalidArgumentException',
+            parameters: ['message' => 'The object of $model parameter should be instance of Eloquent model class']
+        );
+
         config()->set('socialment.models.user', value($model));
 
         return $this;
