@@ -4,7 +4,9 @@ use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use ChrisReedIO\Socialment\Tests\Models\User;
 
-test('createUserUsing callback', function (callable $callback) {
+uses()->group('core');
+
+test('createUser with createUserUsing callback', function (callable $callback) {
     /** @var array{user: User, expectation: ?User} $data */
     $data = $callback();
 

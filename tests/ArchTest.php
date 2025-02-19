@@ -2,13 +2,17 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-test('will not use debugging functions')
+arch('debug')
     ->expect(['dd', 'dump', 'env', 'ray'])
     ->each->not->toBeUsed();
 
 arch('app')
     ->expect('App')
     ->toUseStrictTypes();
+
+arch('http actions')
+    ->expect('App\Http')
+    ->toOnlyBeUsedIn('App\Http');
 
 arch('controllers')
     ->expect('ChrisReedIO\Socialment\Http\Controllers')
@@ -25,3 +29,12 @@ arch('resources')
 arch('models extending')
     ->expect('ChrisReedIO\Socialment\Models')
     ->toExtend(Model::class);
+
+arch('facades')
+    ->expect('Illuminate\Support\Facades')
+    ->not->toBeUsed()
+    ->ignoring([
+        \ChrisReedIO\Socialment\SocialmentServiceProvider::class,
+        \ChrisReedIO\Socialment\SocialmentPlugin::class,
+        \ChrisReedIO\Socialment\Facades\Socialment::class,
+    ]);
