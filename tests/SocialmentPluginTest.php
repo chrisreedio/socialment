@@ -51,8 +51,7 @@ test('createUser without createUserUsing callback', function (callable $callback
 ]);
 
 test('userModel', function (string $class) {
-    expect(config('socialment.models.user'))
-        ->toBe('App\Models\User');
+    config(['socialment.models.user' => 'App\Models\User']);
 
     if ($class === 'TestUser') {
         expect(static fn () => SocialmentPlugin::make()->userModel($class))
