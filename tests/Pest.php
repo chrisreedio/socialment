@@ -8,4 +8,3 @@ uses(TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->beforeEach(function () {
         config(['socialment.models.user' => User::class]);
     });
-
