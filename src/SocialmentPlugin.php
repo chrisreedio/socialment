@@ -134,10 +134,10 @@ class SocialmentPlugin implements Plugin
                 throw new \InvalidArgumentException("Target class [$model] does not exist");
             }
         }
+
         throw_if(
             condition: ! app($model) instanceof \Illuminate\Database\Eloquent\Model,
-            exception: 'InvalidArgumentException',
-            parameters: ['message' => 'The object of $model parameter should be instance of Eloquent model class']
+            exception: new \InvalidArgumentException("The object of $model parameter should be instance of Eloquent model class"),
         );
 
         config()->set('socialment.models.user', value($model));

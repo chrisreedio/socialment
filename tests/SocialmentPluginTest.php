@@ -2,6 +2,7 @@
 
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
+use ChrisReedIO\Socialment\Tests\Models\OrderAction;
 use ChrisReedIO\Socialment\Tests\Models\User;
 
 uses()->group('core');
@@ -53,17 +54,27 @@ test('createUser without createUserUsing callback', function (callable $callback
 test('userModel', function (string $class) {
     config(['socialment.models.user' => 'App\Models\User']);
 
-    if ($class === 'TestUser') {
-        expect(static fn () => SocialmentPlugin::make()->userModel($class))
-            ->toThrow(new \InvalidArgumentException("Target class [$class] does not exist"));
-    } else {
-        SocialmentPlugin::make()->userModel($class);
+    switch ($class) {
+        case 'TestUser':
+            expect(static fn () => SocialmentPlugin::make()->userModel($class))
+                ->toThrow(new \InvalidArgumentException("Target class [$class] does not exist"));
 
-        expect(config('socialment.models.user'))
-            ->not->toBe('App\Models\User')
-            ->toExtend(\Illuminate\Database\Eloquent\Model::class);
+            break;
+        case OrderAction::class:
+            expect(static fn () => SocialmentPlugin::make()->userModel($class))
+                ->toThrow(new \InvalidArgumentException("The object of $class parameter should be instance of Eloquent model class"));
+
+            break;
+
+        default:
+            SocialmentPlugin::make()->userModel($class);
+
+            expect(config('socialment.models.user'))
+                ->not->toBe('App\Models\User')
+                ->toExtend(\Illuminate\Database\Eloquent\Model::class);
     }
 })->with([
     'not existing class' => 'TestUser',
+    'existing not eloquent class' => OrderAction::class,
     'existing class' => User::class,
 ]);
