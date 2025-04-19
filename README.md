@@ -64,13 +64,13 @@ Additionally, edit your panel's `tailwind.config.js` content section to include 
 ```js
 {
     content: [
-        "./app/Filament/**/*.php",
-        "./resources/views/filament/**/*.blade.php",
-        "./vendor/filament/**/*.blade.php",
+        './app/Filament/**/*.php',
+        './resources/views/filament/**/*.blade.php',
+        './vendor/filament/**/*.blade.php',
         // ... Other Content Paths
 
         // Ensure the line below is listed!!!
-        "./vendor/chrisreedio/socialment/resources/**/*.blade.php",
+        './vendor/chrisreedio/socialment/resources/**/*.blade.php',
     ]
 }
 ```
