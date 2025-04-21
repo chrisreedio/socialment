@@ -5,6 +5,17 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v3.10.1 - 2025-04-21
+
+### What's Changed
+
+* build(deps): bump dependabot/fetch-metadata from 2.1.0 to 2.2.0 by @dependabot in https://github.com/chrisreedio/socialment/pull/64
+* build(deps): bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot in https://github.com/chrisreedio/socialment/pull/71
+* build(deps): bump aglipanci/laravel-pint-action from 2.4 to 2.5 by @dependabot in https://github.com/chrisreedio/socialment/pull/72
+* remove illuminate/contracts to support any laravel version by @atmonshi in https://github.com/chrisreedio/socialment/pull/74
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.9.1...v3.10.1
+
 ## v3.9.1 - 2024-07-02
 
 ### What's Changed
