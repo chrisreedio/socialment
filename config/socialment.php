@@ -23,5 +23,4 @@ return [
         // If you want to use a custom user model, you can specify it here.
         'user' => '\App\Models\User',
     ],
-
 ];

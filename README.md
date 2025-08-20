@@ -16,11 +16,11 @@ login page.
 Ideal for Laravel and Filament users seeking a straightforward OAuth integration.
 
 > [!WARNING]
-> Socialment is currently in beta. Please report any issues you encounter.
->
+> Socialment v4 is currently in beta. Please report any issues you encounter.
+> 
 > Caution is advised if you choose to use this package in production.
->
-> Azure AD support has been the only tested provider so far.
+> 
+> Socialment v3 support is still available on the [3.x branch](https://github.com/chrisreedio/socialment/tree/3.x).
 
 #### References
 
@@ -59,18 +59,10 @@ You can easily perform the initial setup by running the following command:
 php artisan socialment:install
 ```
 
-Additionally, edit your panel's `tailwind.config.js` content section to include the last line of the following:
+Additionally, edit your panel's custom `theme.css` and add the following:
 
-```js
-    content: [
-    "./app/Filament/**/*.php",
-    "./resources/views/filament/**/*.blade.php",
-    "./vendor/filament/**/*.blade.php",
-    // ... Other Content Paths
-
-    // Ensure the line below is listed!!!
-    "./vendor/chrisreedio/socialment/resources/**/*.blade.php",
-],
+```css
+@source '../../../../vendor/chrisreedio/socialment/resources';
 ```
 
 If this step is forgotten, the styling of the plugin will not be applied.
@@ -104,32 +96,6 @@ $panel
 ##### Socialment Configuration
 
 ###### Provider Configuration
-
-> [!WARNING]
-> This method of provider configuration is now deprecated and will be removed in a future release.
-> 
-> Configuring providers in your [panel configuration](#per-panel-provider-configuration) has many advantages and is the recommended method.
-
-Whether you're using the default providers or adding your own, you'll need to configure them in the `socialment.php`
-config file.
-
-Configure the `socialment.php` config file to specify providers in the following format:
-
-```php
-return [
-    'providers' => [
-        'azure' => [
-            'icon' => 'fab-microsoft', // Font Awesome Brand Icon
-            'label' => 'Azure', // Display Name on the Login Page
-        ]
-    ],
-	// ... Other Configuration Parameters
-];
-```
-
-Providers specified in the config file are global across all panels.
-
-##### Per-Panel Provider Configuration
 
 You should specify providers on a per-panel basis. To do this use the `->registerProvider` method on the plugin.
 
@@ -292,6 +258,8 @@ $panel->plugins([
 This is the contents of the published config file:
 
 ```php
+// config for ChrisReedIO/Socialment
+
 return [
     'view' => [
         // Set the text above the provider list
@@ -299,27 +267,22 @@ return [
         // Or change out the view completely with your own
         'providers-list' => 'socialment::providers-list',
     ],
-    
-    // DEPRECATED: This will be removed in a future version.
-    // Configure routes via the panel provider.
-    'routes' => [
-        'home' => 'filament.admin.pages.dashboard',
+
+    'spa' => [
+        // The URL to redirect to after a successful login
+        'home' => env('SPA_URL', 'http://localhost:3000'),
+        'responses' => [
+            // Replace with your own JsonResource class if you want to customize the response
+            // 'me' => \ChrisReedIO\Socialment\Http\Resources\UserResponse::class,
+        ],
     ],
-    
+
     'models' => [
         // If you want to use a custom user model, you can specify it here.
-        'user' => \App\Models\User::class,
-    ],
-    
-    // DEPRECATED: This will be removed in a future version.
-    // Configure providers via the panel provider.
-    'providers' => [
-        'azure' => [
-            'icon' => 'fab-microsoft',
-            'label' => 'Azure Active Directory',
-        ]
+        'user' => '\App\Models\User',
     ],
 ];
+
 ```
 
 ## Frontend SPA Authentication
