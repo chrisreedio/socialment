@@ -58,7 +58,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton(SocialmentPlugin::class, fn () => new SocialmentPlugin());
+        $this->app->singleton(SocialmentPlugin::class, fn () => new SocialmentPlugin);
     }
 
     public function packageBooted(): void
@@ -109,7 +109,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
         }
 
         // Testing
-        Testable::mixin(new TestsSocialment());
+        Testable::mixin(new TestsSocialment);
     }
 
     protected function getAssetPackageName(): ?string
