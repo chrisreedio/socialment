@@ -5,6 +5,17 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v4.0.0-beta.1 - 2025-08-20
+
+### What's Changed
+
+* Laravel 12 + FilamentPHP 4 support!
+* build(deps): bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/75
+* build(deps): bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/77
+* chore(deps): update PHP and package versions in composer.json by @chrisreedio in https://github.com/chrisreedio/socialment/pull/80
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.10.1...v4.0.0-beta.1
+
 ## v3.10.1 - 2025-04-21
 
 ### What's Changed
