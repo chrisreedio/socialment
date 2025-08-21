@@ -8,142 +8,176 @@
 ![PHPStan Action Status](https://github.com/chrisreedio/socialment/actions/workflows/phpstan.yml/badge.svg)
 [![Total Downloads](https://img.shields.io/packagist/dt/chrisreedio/socialment.svg?style=flat-square)](https://packagist.org/packages/chrisreedio/socialment)
 
+## Table of Contents
+
+- [About](#about)
+- [Quick Start](#quick-start)
+- [Installation](#installation)
+- [Basic Setup](#basic-setup)
+- [Provider Configuration](#provider-configuration)
+- [Advanced Configuration](#advanced-configuration)
+- [Customization](#customization)
+- [SPA Authentication](#spa-authentication)
+- [Testing](#testing)
+- [Contributing](#contributing)
+
+---
+
 ## About
 
-Bring up-to-date and simple Socialite support to your Filament admin panel with this plugin. Adds OAuth buttons to your
-login page.
+Bring up-to-date and simple Socialite support to your Filament admin panel with this plugin. Adds OAuth buttons to your login page.
 
-Ideal for Laravel and Filament users seeking a straightforward OAuth integration.
+**✨ Key Features:**
+- 🔐 Easy OAuth integration with Filament panels
+- 🎨 Customizable provider buttons with icons
+- 🔗 Supports all Laravel Socialite providers
+- 🎯 Per-panel provider configuration  
+- 🔧 Extensible with custom login hooks
+- 📱 Experimental SPA authentication support
+
+**Perfect for:** Laravel and Filament users seeking straightforward OAuth integration.
 
 > [!WARNING]
-> Socialment v4 is currently in beta. Please report any issues you encounter.
+> **Socialment v4 is currently in beta.** Please report any issues you encounter.
 > 
-> Caution is advised if you choose to use this package in production.
+> ⚠️ Caution is advised if you choose to use this package in production.
 > 
-> Socialment v3 support is still available on the [3.x branch](https://github.com/chrisreedio/socialment/tree/3.x).
-
-#### References
-
-This package extends [Laravel Socialite](https://laravel.com/docs/master/socialite). Socialite currently supports
-authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, and Bitbucket out of the box.
-
-Refer to the [Socialite documentation](https://laravel.com/docs/master/socialite) for more information on how to
-configure your application to use these providers.
-
-Many other providers are available via the [Socialite Providers](https://socialiteproviders.com/) website. Refer to the
-documentation for each provider for information on how to configure your application to use them.
+> 📋 Socialment v3 support is still available on the [3.x branch](https://github.com/chrisreedio/socialment/tree/3.x).
 
 ### Demo
 
-For an example usage of this package, see [ChrisReedIO/Socialment-Demo](https://github.com/chrisreedio/socialment-demo).
+🎮 **Demo Project:** [ChrisReedIO/Socialment-Demo](https://github.com/chrisreedio/socialment-demo)
 
-![image](https://github.com/chrisreedio/socialment/assets/77644584/c07c6518-df0b-4143-8826-efa3cbdaa681)
+*Not yet updated to v4.*
+
+![Login Screen Preview](https://github.com/chrisreedio/socialment/assets/77644584/c07c6518-df0b-4143-8826-efa3cbdaa681)
+
+### References
+
+This package extends [Laravel Socialite](https://laravel.com/docs/master/socialite). Socialite currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, and Bitbucket out of the box.
+
+📚 **Useful Links:**
+- [Socialite Documentation](https://laravel.com/docs/master/socialite)
+- [Socialite Providers Community](https://socialiteproviders.com/) - Additional provider packages
+
+---
+
+## Quick Start
+
+> [!TIP]
+> **Already familiar with Laravel Socialite?** Skip to [Panel Configuration](#panel-configuration)
+
+**1. Install the package**
+```bash
+composer require chrisreedio/socialment
+```
+
+**2. Run the setup command**
+```bash
+php artisan socialment:install
+```
+
+**3. Add to your panel configuration**
+```php
+$panel->plugins([
+    \ChrisReedIO\Socialment\SocialmentPlugin::make()
+        ->registerProvider('github', 'fab-github', 'GitHub'),
+]);
+```
+
+**4. Configure your OAuth provider** (see [Provider Configuration](#provider-configuration))
 
 ---
 
 ## Installation
 
-You can install the package via composer:
+Install the package via Composer:
 
 ```bash
 composer require chrisreedio/socialment
 ```
 
-## Usage
+## Basic Setup
 
-#### Initial Setup
+### 1. Run Installation Command
 
-You can easily perform the initial setup by running the following command:
+Perform the initial setup:
 
 ```bash
 php artisan socialment:install
 ```
 
-Additionally, edit your panel's custom `theme.css` and add the following:
+### 2. Add Styling Support
+
+Edit your panel's custom `theme.css` and add:
 
 ```css
 @source '../../../../vendor/chrisreedio/socialment/resources';
 ```
 
-If this step is forgotten, the styling of the plugin will not be applied.
+> [!IMPORTANT]
+> **Don't skip this step!** Without it, the plugin styling won't be applied.
 
-Please continue to the next sections to continue the setup process.
+### 3. Panel Configuration
 
-### Panel Configuration
-
-Include this plugin in your panel configuration:
+Include the plugin in your panel configuration:
 
 ```php
+// In your PanelProvider (e.g., app/Providers/Filament/AdminPanelProvider.php)
 $panel
-	->plugins([
-		// ... Other Plugins
+    ->plugins([
+        // ... Other Plugins
         \ChrisReedIO\Socialment\SocialmentPlugin::make(),        
-	])
+    ])
 ```
 
-#### Provider Configuration
+---
 
-> [!IMPORTANT]
-> At this point, you'll need to configure your application to use the provider(s) you want to support.
->
-> Either configure the needed stock socialite providers
-> or [community maintained providers](https://socialiteproviders.com/).
->
-> Refer to the [Socialite documentation](https://laravel.com/docs/master/socialite) for more information.
->
-> This will usually involve installing a package and configuring your application's `config/services.php` file.
+## Provider Configuration
 
-##### Socialment Configuration
+### Overview
 
-###### Provider Configuration
+You need to configure OAuth providers in two places:
+1. **Laravel Socialite** - Install provider packages and configure credentials
+2. **Socialment** - Register providers with your Filament panel
 
-You should specify providers on a per-panel basis. To do this use the `->registerProvider` method on the plugin.
+### Step 1: Install & Configure Socialite Provider
 
+Choose from [stock providers](https://laravel.com/docs/master/socialite) or [community providers](https://socialiteproviders.com/).
+
+**Example: GitHub (Stock Provider)**
+
+Add to `config/services.php`:
 ```php
-$panel->plugins([
-    \ChrisReedIO\Socialment\SocialmentPlugin::make()
-        ->registerProvider('azure', 'fab-microsoft', 'Azure Active Directory'),
-]);
+'github' => [
+    'client_id' => env('GITHUB_CLIENT_ID'),
+    'client_secret' => env('GITHUB_CLIENT_SECRET'),
+    'redirect' => env('GITHUB_REDIRECT_URI'),
+],
 ```
 
-##### Sample Provider Configuration - Azure Active Directory
+**Example: Azure Active Directory (Community Provider)**
 
-> [!IMPORTANT]
-> For this configured Azure provider, the redirect URI would be `https://DOMAIN/login/azure/redirect`
->
-> The callback URI would be `https://DOMAIN/login/azure/callback`
-
-For example, the sample provider included in the stock `socialment.php` config is Azure Active Directory.
-To start, You would refer to the documentation for
-the [Azure Socialite Provider](https://socialiteproviders.com/Microsoft-Azure/).
-
-Normally, you would follow the providers documentation on the aforementioned link but to demostrate the process for
-Socialment, I'll include the steps here.
-
-Per their documentation, you would install the community Azure provider via
-
+Install the provider package:
 ```bash
 composer require socialiteproviders/microsoft-azure
 ```
 
-Then you would configure your `config/services.php` file to include the Azure provider's credentials:
-
+Add to `config/services.php`:
 ```php
 'azure' => [    
-  'client_id' => env('AZURE_CLIENT_ID'),
-  'client_secret' => env('AZURE_CLIENT_SECRET'),
-  'redirect' => env('AZURE_REDIRECT_URI'),
-  'tenant' => env('AZURE_TENANT_ID'),
-  'proxy' => env('PROXY')  // optionally
+    'client_id' => env('AZURE_CLIENT_ID'),
+    'client_secret' => env('AZURE_CLIENT_SECRET'),
+    'redirect' => env('AZURE_REDIRECT_URI'),
+    'tenant' => env('AZURE_TENANT_ID'),
+    'proxy' => env('PROXY'), // optional
 ],
 ```
 
-In addition, you need to add this provider's event listener to your `app/Providers/EventServiceProvider.php` file:
-
+Add to `app/Providers/EventServiceProvider.php`:
 ```php
 protected $listen = [
-	// ... other listeners
-
+    // ... other listeners
     \SocialiteProviders\Manager\SocialiteWasCalled::class => [
         // ... other providers
         \SocialiteProviders\Azure\AzureExtendSocialite::class.'@handle',
@@ -151,199 +185,205 @@ protected $listen = [
 ];
 ```
 
-Finally, don't forget to add the needed environment variables to your `.env` file:
+### Step 2: Register with Socialment
 
-```dotenv
-AZURE_CLIENT_ID=
-AZURE_CLIENT_SECRET=
-AZURE_REDIRECT_URI=
-AZURE_TENANT_ID=
-```
-
-The `usage` section can usually be ignored as that is the main part this package should handle for you.
-
-> [!NOTE]
-> It is in the plans to improve the handling of the sign in process to align more with Socialstream in allowing you to
-> specify an `action` class or closure to handle the sign in process.
->
-> This will allow for customized handling on a per provider, per application basis.
-
-This package also uses the [Blade Font Awesome package](https://github.com/owenvoke/blade-fontawesome)
-by [Owen Voke](https://github.com/owenvoke).
-
-Search for brand icons on the [Font Awesome Website](https://fontawesome.com/search?o=r&f=brands).
-
-### Visibility Override
-
-By default, the plugin displays the configured providers at the bottom of the login form.
-You can additionally override the visibility of the plugin by passing a boolean or closure to the `visible` method:
+Add providers to your panel configuration:
 
 ```php
 $panel->plugins([
     \ChrisReedIO\Socialment\SocialmentPlugin::make()
-        ->visible(fn () => false)
+        ->registerProvider('github', 'fab-github', 'GitHub')
+        ->registerProvider('azure', 'fab-microsoft', 'Azure Active Directory'),
 ]);
 ```
 
-### Extras
+**Parameters:**
+- `provider_name` - Matches your `config/services.php` key
+- `icon` - Font Awesome brand icon ([search icons](https://fontawesome.com/search?o=r&f=brands))
+- `label` - Display name for the button
 
-You may publish and customize the views using
+### OAuth Redirect URLs
 
-```bash
-php artisan vendor:publish --tag="socialment-views"
+> [!NOTE]
+> **URL Pattern:** `https://yourdomain.com/login/{provider}/callback`
+> 
+> **Examples:**
+> - GitHub: `https://yourdomain.com/login/github/callback`  
+> - Azure: `https://yourdomain.com/login/azure/callback`
 
-```
+---
 
-#### Login Callbacks
+## Advanced Configuration
 
-You may configure pre/post login hooks/callbacks by adding code similar to the following to the `boot` method of a
-service provider:
+### Visibility Control
+
+Control when OAuth buttons appear:
 
 ```php
-use ChrisReedIO\Socialment\Models\ConnectedAccount;
-
-public function boot(): void
-{
-    // Post Login Hook
-    Socialment::preLogin(function (ConnectedAccount $connectedAccount) {
-        // Handle custom pre login logic here.
-    });
-    
-    // Multiple hooks can be added
-    Socialment::preLogin(function (ConnectedAccount $connectedAccount) {
-        // Handle additional custom pre login logic here if you need.
-    });
-
-    // Post Login Hook
-    Socialment::postLogin(function (ConnectedAccount $connectedAccount) {
-        // Handle custom post login logic here.
-        Log::info('User logged in with ' . $connectedAccount->provider . ' account', [
-            'connectedAccount' => $connectedAccount,
-        ]);
-    });
-}
+$panel->plugins([
+    \ChrisReedIO\Socialment\SocialmentPlugin::make()
+        ->visible(fn () => config('app.env') !== 'production')
+]);
 ```
 
-The user relation can be accessed via `$connectedAccount->user`.
+### Custom Login Route
 
-The `ConnectedAccount` is passed instead of the `User` so that you can easily know which social account was used for the
-login.
-
-#### Login Route for failed logins
-
-If a login fails or encounters a InvalidStateException, the user will be redirected to the configured `loginRoute`
-route.
-
-This defaults to `filament.admin.auth.login` but can be overriden on the plugin declaration in your panel provider
-configuration:
+Set a custom route for failed logins:
 
 ```php
 $panel->plugins([
     \ChrisReedIO\Socialment\SocialmentPlugin::make()
         ->loginRoute('filament.staff.auth.login')
-]);
-```
-
-You may also use a closure here to dynamically set the route:
-
-```php
-$panel->plugins([
-    \ChrisReedIO\Socialment\SocialmentPlugin::make()
+        // Or use a closure
         ->loginRoute(fn () => SomeFunctionToGetTheRouteName())
 ]);
 ```
 
-### Config
+### Login Hooks
 
-This is the contents of the published config file:
+Add custom logic before/after login:
 
 ```php
-// config for ChrisReedIO/Socialment
+// In a service provider's boot() method
+use ChrisReedIO\Socialment\Models\ConnectedAccount;
+use ChrisReedIO\Socialment\Facades\Socialment;
+use ChrisReedIO\Socialment\Exceptions\AbortedLoginException;
 
-return [
-    'view' => [
-        // Set the text above the provider list
-        'prompt' => 'Or Login Via',
-        // Or change out the view completely with your own
-        'providers-list' => 'socialment::providers-list',
-    ],
+public function boot(): void
+{
+    // Pre-login hook
+    Socialment::preLogin(function (ConnectedAccount $connectedAccount) {
+        // Custom pre-login logic here
+        Log::info('User about to login', ['provider' => $connectedAccount->provider]);
+    });
 
-    'spa' => [
-        // The URL to redirect to after a successful login
-        'home' => env('SPA_URL', 'http://localhost:3000'),
-        'responses' => [
-            // Replace with your own JsonResource class if you want to customize the response
-            // 'me' => \ChrisReedIO\Socialment\Http\Resources\UserResponse::class,
-        ],
-    ],
-
-    'models' => [
-        // If you want to use a custom user model, you can specify it here.
-        'user' => '\App\Models\User',
-    ],
-];
-
+    // Post-login hook
+    Socialment::postLogin(function (ConnectedAccount $connectedAccount) {
+        Log::info('User logged in with ' . $connectedAccount->provider . ' account', [
+            'user' => $connectedAccount->user->email,
+        ]);
+    });
+}
 ```
 
-## Frontend SPA Authentication
+#### Pre-login Hook: External Service Access Control
+
+Use the pre-login hook to verify user access via an external service before allowing authentication:
+
+```php
+use ChrisReedIO\Socialment\Models\ConnectedAccount;
+use ChrisReedIO\Socialment\Facades\Socialment;
+use ChrisReedIO\Socialment\Exceptions\AbortedLoginException;
+use Illuminate\Support\Facades\Http;
+
+public function boot(): void
+{
+    // Check to see of the use has sufficient permissions to access the application.
+    Socialment::preLogin(function (ConnectedAccount $connectedAccount) { // Sets up a hook on the 'plugin' itself
+        // Handle custom post login logic here.
+        $groups = (new GraphConnector($connectedAccount->token))
+            ->users()->groups($connectedAccount->provider_user_id);
+
+        // Grab the results from the lazy collection
+        $groupNames = collect($groups->pluck('displayName')->all());
+
+        // Filter the list of system roles by the groups the user is a member of in Azure AD
+        $roles = Role::all()->filter(fn ($role) => $groupNames->contains($role->sso_group));
+
+        // Sync the user's roles with the filtered list
+        $connectedAccount->user->roles()->sync($roles);
+
+        // If the user has no roles, abort the login
+        if ($connectedAccount->user->roles->isEmpty()) {
+            throw new AbortedLoginException('You are not authorized to access this application.');
+        }
+    });
+}
+```
+
+### Configuration File
+
+Publish and customize the config:
+
+```bash
+php artisan vendor:publish --tag="socialment-config"
+```
+
+**Key config options:**
+```php
+return [
+    'view' => [
+        'prompt' => 'Or Login Via',  // Text above provider buttons
+        'providers-list' => 'socialment::providers-list', // Custom view
+    ],
+    
+    'models' => [
+        'user' => '\\App\\Models\\User', // Custom user model
+    ],
+];
+```
+
+---
+
+## Customization
+
+### Custom Views
+
+Publish and customize the views:
+
+```bash
+php artisan vendor:publish --tag="socialment-views"
+```
+
+Views will be copied to `resources/views/vendor/socialment/`.
+
+### Font Awesome Icons
+
+This package uses [Blade Font Awesome](https://github.com/owenvoke/blade-fontawesome) by [Owen Voke](https://github.com/owenvoke).
+
+Search for brand icons on the [Font Awesome Website](https://fontawesome.com/search?o=r&f=brands).
+
+---
+
+## SPA Authentication
 
 > [!CAUTION]
-> This feature is still in development and thus highly experimental.
+> **🧪 Experimental Feature**
 > 
-> Expect breaking changes and bugs. Use at your own risk.
-> 
-> The documentation will be updated as the feature is finalized.
+> This feature is still in development and highly experimental. Expect breaking changes and bugs. Use at your own risk.
 > 
 > This feature may be spun off into a separate package in the future.
 
-This package includes support for authenticating with a Single Page Application (SPA) frontend. Both the Filament backend and SPA frontend must be hosted on the same domain. 
+### Overview
 
-The login session is shared so logging into either the SPA or the backend will log you into both. 
+Enable shared authentication between your Filament backend and Single Page Application frontend. Both must be hosted on the same domain.
 
-Special CORS and session settings are required to make this work and caution must be taken to ensure that proper access controls (Policies / Panel Access / Etc) are in place.
+### Setup Steps
 
-### Setup
-
-You'll need to add the new `spaAuth` routes to your `routes/web` file.
-
+**1. Add SPA routes** to `routes/web.php`:
 ```php
-// In this example, we pass 'dashboard' as the SPA route name.
-// We'll want to make sure the 'prefix' our custom routes match.
-// If no prefix is set/passed to spaAuth, the default is 'spa'.
-
+// Pass your SPA route prefix (default: 'spa')
 Route::spaAuth('dashboard');
 
 Route::middleware('auth:sanctum')
     ->prefix('dashboard')
     ->as('dashboard.')
     ->group(function () {
-        // Custom Routes
+        // Your SPA API routes
     });
 ```
 
-### Configuration Changes
-
-You'll need to modify the `config/cors.php` file. 
-
-You'll need to add the following to the `paths` array:
-
+**2. Update CORS configuration** in `config/cors.php`:
 ```php
-    'paths' => [
-        // ... Other Paths
-        'spa/*', // OR use the custom prefix you set in the routes/web file.
-    ],
+'paths' => [
+    // ... Other Paths
+    'spa/*', // Or your custom prefix
+],
+
+'supports_credentials' => true,
 ```
 
-Also ensure that the `supports_credentials` is set to `true`:
-
-```php
-    'supports_credentials' => true,
-```
-
-### Environment Variables
-
-We need to set a few ENV variables to ensure that the SPA authentication works properly.
-
+**3. Set environment variables:**
 ```dotenv
 SANCTUM_STATEFUL_DOMAINS="https://frontend.localhost:3000,https://backend.localhost"
 SESSION_DOMAIN=".localhost"
@@ -351,23 +391,36 @@ SESSION_SECURE_COOKIE=true
 SPA_URL="https://frontend.localhost:3000"
 ```
 
-The `SESSION_DOMAIN` should be the shared domain between your SPA and your backend. It should begin with a period.
+**Key points:**
+- `SESSION_DOMAIN` should start with a period (`.localhost`)
+- `SPA_URL` points to your frontend application
+- Both frontend and backend must share the same root domain
 
-The `SPA_URL` is the URL of your SPA application.
+### SPA Configuration
 
-> [!NOTE]
-> Ths SPA functionality is a work in progress and is subject to change.
->
-> This documentation section will be updated as the feature is finalized.
+Update the config file:
+```php
+'spa' => [
+    'home' => env('SPA_URL', 'http://localhost:3000'),
+    'responses' => [
+        // Custom JsonResource for API responses
+        // 'me' => \App\Http\Resources\UserResponse::class,
+    ],
+],
+```
+
+---
 
 ## Testing
 
 > [!NOTE]
-> Tests have yet to be written for this package. They are on my TODO list. I'm also open to PRs.
+> Tests have yet to be written for this package. They are on the TODO list. PRs welcome!
 
 ```bash
 composer test
 ```
+
+---
 
 ## Changelog
 
