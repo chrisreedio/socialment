@@ -89,7 +89,9 @@ Edit your panel's custom `theme.css` and add:
 
 > [!IMPORTANT]
 > **Don't skip this step!** Without it, the plugin styling won't be applied.
+>
 > If you don't have a custom theme, you should create one before adding the source.
+>
 > To learn more about creating a custom theme, see the [Filament documentation](https://filamentphp.com/docs/4.x/styling/overview#creating-a-custom-theme).
 
 ### 3. Panel Configuration
