@@ -11,7 +11,6 @@
 ## Table of Contents
 
 - [About](#about)
-- [Quick Start](#quick-start)
 - [Installation](#installation)
 - [Basic Setup](#basic-setup)
 - [Provider Configuration](#provider-configuration)
@@ -59,33 +58,6 @@ This package extends [Laravel Socialite](https://laravel.com/docs/master/sociali
 📚 **Useful Links:**
 - [Socialite Documentation](https://laravel.com/docs/master/socialite)
 - [Socialite Providers Community](https://socialiteproviders.com/) - Additional provider packages
-
----
-
-## Quick Start
-
-> [!TIP]
-> **Already familiar with Laravel Socialite?** Skip to [Panel Configuration](#panel-configuration)
-
-**1. Install the package**
-```bash
-composer require chrisreedio/socialment
-```
-
-**2. Run the setup command**
-```bash
-php artisan socialment:install
-```
-
-**3. Add to your panel configuration**
-```php
-$panel->plugins([
-    \ChrisReedIO\Socialment\SocialmentPlugin::make()
-        ->registerProvider('github', 'fab-github', 'GitHub'),
-]);
-```
-
-**4. Configure your OAuth provider** (see [Provider Configuration](#provider-configuration))
 
 ---
 
