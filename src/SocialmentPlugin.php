@@ -11,7 +11,6 @@ use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
-use function array_merge;
 use function config;
 
 class SocialmentPlugin implements Plugin
@@ -49,7 +48,7 @@ class SocialmentPlugin implements Plugin
 
     public function getProviders(): array
     {
-        return array_merge(config('socialment.providers'), $this->providers);
+        return $this->providers;
     }
 
     public function getProvider(string $provider): array
@@ -79,12 +78,10 @@ class SocialmentPlugin implements Plugin
                 return '';
             }
 
-            $providers = array_merge(config('socialment.providers'), $this->providers);
-
             return View::make(
                 config('socialment.view.providers-list', 'socialment::providers-list'),
                 [
-                    'providers' => $providers,
+                    'providers' => $this->providers,
                     'multiPanel' => $this->isMultiPanel(),
                     'panel' => $this->panel,
                 ]
@@ -137,7 +134,6 @@ class SocialmentPlugin implements Plugin
 
     public function getLoginRoute(): ?string
     {
-        // dd($this->panel->getId());
         if ($this->loginRoute === null) {
             return null;
             // return $this->panel->getLoginUrl();
@@ -192,12 +188,6 @@ class SocialmentPlugin implements Plugin
      */
     public function executePreLogin(ConnectedAccount $account): void
     {
-        // dump('plugin ID: ' . $this->getId());
-        // dump('panel ID: ' . $this->panel->getId());
-        // dump('executePreLogin');
-        // dump('Count of hooks: ' . count($this->preLoginCallbacks));
-        // dd('Count of global hooks: ' . count(self::$loginHooks))
-
         foreach ($this->preLoginCallbacks as $callback) {
             ($callback)($account);
         }
