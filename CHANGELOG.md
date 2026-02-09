@@ -5,6 +5,17 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v5.0.0-beta.1 - 2026-02-09
+
+### Filament v5 Support
+
+#### What's Changed
+
+* build(deps): bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/83
+* build(deps): bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/85
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v4.0.0-beta.1...v5.0.0-beta.1
+
 ## v4.0.0-beta.1 - 2025-08-20
 
 ### What's Changed
