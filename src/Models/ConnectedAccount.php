@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $avatar
  * @property string $token
  * @property string $refresh_token
- * @property Datetime $expires_at
+ * @property \DateTimeInterface|null $expires_at
  */
 class ConnectedAccount extends Model
 {
