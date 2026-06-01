@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\Factory as SocialiteFactory;
 
 it('does not flash raw generic callback exception messages', function () {
+    config()->set('app.key', 'base64:MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=');
+
     $exception = new Exception(
         "SQLSTATE[HY000]: General error: 1205 Lock wait timeout exceeded (SQL: insert into `connected_accounts` (`token`) values ('eyJ0eXAiOiJKV1Qi'))"
     );
@@ -21,13 +23,15 @@ it('does not flash raw generic callback exception messages', function () {
 
     app()->instance(SocialiteFactory::class, $socialite);
 
-    Log::shouldReceive('error')
-        ->once()
-        ->with('Socialment callback error', Mockery::on(fn (array $context): bool => $context['exception'] === $exception));
+    Log::spy();
 
     $this->withSession(['socialment.intended.url' => '/admin/login'])
         ->get(route('socialment.callback', ['provider' => 'azure']))
         ->assertRedirect('/admin/login');
+
+    Log::shouldHaveReceived('error')
+        ->once()
+        ->with('Socialment callback error', Mockery::on(fn (array $context): bool => $context['exception'] === $exception));
 
     expect(session('socialment.error'))
         ->toBe('An error occurred during sign-in. Please try again.')
