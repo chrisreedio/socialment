@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Log;
-use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Contracts\Factory as SocialiteFactory;
 
 it('does not flash raw generic callback exception messages', function () {
     $exception = new Exception(
@@ -13,10 +13,13 @@ it('does not flash raw generic callback exception messages', function () {
         ->once()
         ->andThrow($exception);
 
-    Socialite::shouldReceive('driver')
+    $socialite = Mockery::mock(SocialiteFactory::class);
+    $socialite->shouldReceive('driver')
         ->once()
         ->with('azure')
         ->andReturn($provider);
+
+    app()->instance(SocialiteFactory::class, $socialite);
 
     Log::shouldReceive('error')
         ->once()
