@@ -5,6 +5,19 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v5.0.1 - 2026-06-01
+
+### What's Changed
+
+* build(deps): bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/75
+* build(deps): bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/77
+* chore(deps): update PHP and package versions in composer.json by @chrisreedio in https://github.com/chrisreedio/socialment/pull/80
+* build(deps): bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/83
+* build(deps): bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/85
+* Bugfix/security-01 by @chrisreedio in https://github.com/chrisreedio/socialment/pull/92
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.10.1...v5.0.1
+
 ## v5.0.0-beta.1 - 2026-02-09
 
 ### Filament v5 Support
