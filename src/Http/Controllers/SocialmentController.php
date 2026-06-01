@@ -8,13 +8,16 @@ use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use Exception;
 use Filament\Facades\Filament;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use JetBrains\PhpStorm\Deprecated;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\InvalidStateException;
+use SocialiteProviders\Manager\OAuth2\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use function redirect;
@@ -63,7 +66,7 @@ class SocialmentController extends BaseController
     public function callback(string $provider): RedirectResponse
     {
         try {
-            /** @var \SocialiteProviders\Manager\OAuth2\User $socialUser */
+            /** @var User $socialUser */
             $socialUser = Socialite::driver($provider)->user();
 
             $tokenExpiration = match ($provider) {
@@ -116,12 +119,13 @@ class SocialmentController extends BaseController
             Socialment::executePostLogin($connectedAccount);
         } catch (InvalidStateException $e) {
             Session::flash('socialment.error', 'Something went wrong. Please try again.');
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
+        } catch (ClientException $e) {
             Session::flash('socialment.error', 'We had a problem contacting the authentication server. Please try again.');
         } catch (AbortedLoginException $e) {
             Session::flash('socialment.error', $e->getMessage());
         } catch (Exception $e) {
-            Session::flash('socialment.error', 'An unknown error occurred: ' . $e->getMessage() . '. Please try again.');
+            Log::error('Socialment callback error', ['exception' => $e]);
+            Session::flash('socialment.error', 'An error occurred during sign-in. Please try again.');
         }
 
         return redirect()->to($this->getRedirectUrl());
