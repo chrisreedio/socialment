@@ -2,15 +2,16 @@
 
 namespace ChrisReedIO\Socialment\Facades;
 
+use ChrisReedIO\Socialment\SocialmentPlugin;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \ChrisReedIO\Socialment\SocialmentPlugin
+ * @see SocialmentPlugin
  */
 class Socialment extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \ChrisReedIO\Socialment\SocialmentPlugin::class;
+        return SocialmentPlugin::class;
     }
 }
