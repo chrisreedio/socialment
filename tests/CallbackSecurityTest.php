@@ -4,10 +4,12 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\Factory as SocialiteFactory;
 
 it('does not flash raw generic callback exception messages', function () {
-    config()->set('app.key', 'base64:MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=');
+    $leakedToken = 'fake-oauth-access-token-value';
+
+    config()->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
 
     $exception = new Exception(
-        "SQLSTATE[HY000]: General error: 1205 Lock wait timeout exceeded (SQL: insert into `connected_accounts` (`token`) values ('eyJ0eXAiOiJKV1Qi'))"
+        "SQLSTATE[HY000]: General error: 1205 Lock wait timeout exceeded (SQL: insert into `connected_accounts` (`token`) values ('{$leakedToken}'))"
     );
 
     $provider = Mockery::mock();
@@ -35,7 +37,7 @@ it('does not flash raw generic callback exception messages', function () {
 
     expect(session('socialment.error'))
         ->toBe('An error occurred during sign-in. Please try again.')
-        ->not->toContain('eyJ0eXAiOiJKV1Qi')
+        ->not->toContain($leakedToken)
         ->not->toContain('connected_accounts')
         ->not->toContain('SQLSTATE');
 });
