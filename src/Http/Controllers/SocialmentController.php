@@ -11,6 +11,7 @@ use Filament\Facades\Filament;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use JetBrains\PhpStorm\Deprecated;
 use Laravel\Socialite\Facades\Socialite;
@@ -123,7 +124,8 @@ class SocialmentController extends BaseController
         } catch (AbortedLoginException $e) {
             Session::flash('socialment.error', $e->getMessage());
         } catch (Exception $e) {
-            Session::flash('socialment.error', 'An unknown error occurred: ' . $e->getMessage() . '. Please try again.');
+            Log::error('Socialment callback error', ['exception' => $e]);
+            Session::flash('socialment.error', 'An error occurred during sign-in. Please try again.');
         }
 
         return redirect()->to($this->getRedirectUrl());
