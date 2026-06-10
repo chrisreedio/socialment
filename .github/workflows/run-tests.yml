@@ -13,22 +13,16 @@ jobs:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest ]
-        php: [ 8.5, 8.4, 8.3, 8.2 ]
-        laravel: [11.*, 12.*, 13.*]
+        php: [ 8.5, 8.4, 8.3 ]
+        laravel: [12.*, 13.*]
         stability: [prefer-lowest, prefer-stable]
         include:
-          - laravel: 11.*
-            testbench: 9.*
-            carbon: ^2.63
           - laravel: 12.*
             testbench: 10.*
             carbon: ^3.8
           - laravel: 13.*
             testbench: 11.*
             carbon: ^3.8.4
-        exclude:
-          - php: 8.2
-            laravel: 13.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -57,4 +51,4 @@ jobs:
         run: composer show -D
 
       - name: Execute tests
-        run: vendor/bin/pest --ci
+        run: vendor/bin/pest --ci --no-coverage
