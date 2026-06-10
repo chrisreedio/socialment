@@ -5,6 +5,19 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v5.1.0 - 2026-06-10
+
+### What's Changed
+
+##### Laravel 13 Support
+
+* build(deps): bump dependabot/fetch-metadata from 2.5.0 to 3.1.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/95
+* build(deps): bump ramsey/composer-install from 3 to 4 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/96
+* build(deps): bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/97
+* update font awesome to support laravel 13 by @atmonshi in https://github.com/chrisreedio/socialment/pull/91
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v5.0.1...v5.1.0
+
 ## v5.0.1 - 2026-06-01
 
 ### What's Changed
