@@ -36,13 +36,6 @@ Bring up-to-date and simple Socialite support to your Filament admin panel with 
 
 **Perfect for:** Laravel and Filament users seeking straightforward OAuth integration.
 
-> [!WARNING]
-> **Socialment v4 is currently in beta.** Please report any issues you encounter.
-> 
-> ⚠️ Caution is advised if you choose to use this package in production.
-> 
-> 📋 Socialment v3 support is still available on the [3.x branch](https://github.com/chrisreedio/socialment/tree/3.x).
-
 ### Demo
 
 🎮 **Demo Project:** [ChrisReedIO/Socialment-Demo](https://github.com/chrisreedio/socialment-demo)
