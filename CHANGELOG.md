@@ -5,6 +5,21 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v5.1.1 - 2026-07-08
+
+### What's Changed
+
+* Remove outdated warning by @ziming in https://github.com/chrisreedio/socialment/pull/93
+* build(deps): bump actions/checkout from 6 to 7 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/99
+* fix: return 404 for unregistered providers instead of 500 by @zupolgec in https://github.com/chrisreedio/socialment/pull/94
+
+### New Contributors
+
+* @ziming made their first contribution in https://github.com/chrisreedio/socialment/pull/93
+* @zupolgec made their first contribution in https://github.com/chrisreedio/socialment/pull/94
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v5.1.0...v5.1.1
+
 ## v5.1.0 - 2026-06-10
 
 ### What's Changed
