@@ -53,14 +53,33 @@ class SocialmentController extends BaseController
 
     private function getProviderRedirect(string $providerName): \Illuminate\Http\RedirectResponse
     {
+        $providerConfig = $this->getProviderConfig($providerName);
+
         /** @var AbstractProvider $provider */
         $provider = Socialite::driver($providerName);
-        $providerConfig = App::make(SocialmentPlugin::class)->getProvider($providerName);
         if (! empty($providerConfig['scopes'])) {
             $provider->scopes($providerConfig['scopes']);
         }
 
         return $provider->redirect();
+    }
+
+    /**
+     * Resolve the configuration for a registered provider.
+     *
+     * Unknown providers (e.g. someone hitting /login/foo) are a missing
+     * resource, not a server error, so abort with a 404 instead of letting
+     * Socialite throw and surface as a 500.
+     *
+     * @return array<string, mixed>
+     */
+    private function getProviderConfig(string $providerName): array
+    {
+        $providers = App::make(SocialmentPlugin::class)->getProviders();
+
+        abort_unless(array_key_exists($providerName, $providers), 404);
+
+        return $providers[$providerName];
     }
 
     public function callback(string $provider): RedirectResponse
