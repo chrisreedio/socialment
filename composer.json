@@ -35,13 +35,14 @@
         "laravel/pint": "^1.13",
         "nunomaduro/collision": "^7.10|^8.0",
         "orchestra/testbench": "^v8.14|^9.0",
-        "pestphp/pest": "^2.10",
-        "pestphp/pest-plugin-arch": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-arch": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-phpunit": "^1.3",
-        "socialiteproviders/manager": "^4.4"
+        "socialiteproviders/manager": "^4.4",
+        "spatie/laravel-ray": "^1.37"
     },
     "autoload": {
         "psr-4": {
@@ -57,7 +58,7 @@
     "scripts": {
         "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
         "analyse": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/pest",
+        "test": "vendor/bin/pest --bail",
         "test-coverage": "vendor/bin/pest --coverage",
         "format": "vendor/bin/pint"
     },

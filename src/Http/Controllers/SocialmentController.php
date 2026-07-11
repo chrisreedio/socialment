@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ChrisReedIO\Socialment\Http\Controllers;
 
 use ChrisReedIO\Socialment\Exceptions\AbortedLoginException;
@@ -8,17 +10,11 @@ use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use Exception;
 use Filament\Facades\Filament;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use JetBrains\PhpStorm\Deprecated;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\InvalidStateException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
-use function redirect;
-use function request;
 
 class SocialmentController extends BaseController
 {
@@ -52,7 +48,7 @@ class SocialmentController extends BaseController
     {
         /** @var AbstractProvider $provider */
         $provider = Socialite::driver($providerName);
-        $providerConfig = App::make(SocialmentPlugin::class)->getProvider($providerName);
+        $providerConfig = app(SocialmentPlugin::class)->getProvider($providerName);
         if (! empty($providerConfig['scopes'])) {
             $provider->scopes($providerConfig['scopes']);
         }
@@ -111,17 +107,17 @@ class SocialmentController extends BaseController
 
             Socialment::executePreLogin($connectedAccount);
 
-            Auth::login($connectedAccount->user);
+            auth()->login($connectedAccount->user);
 
             Socialment::executePostLogin($connectedAccount);
-        } catch (InvalidStateException $e) {
-            Session::flash('socialment.error', 'Something went wrong. Please try again.');
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
-            Session::flash('socialment.error', 'We had a problem contacting the authentication server. Please try again.');
+        } catch (InvalidStateException) {
+            session()->flash('socialment.error', 'Something went wrong. Please try again.');
+        } catch (\GuzzleHttp\Exception\ClientException) {
+            session()->flash('socialment.error', 'We had a problem contacting the authentication server. Please try again.');
         } catch (AbortedLoginException $e) {
-            Session::flash('socialment.error', $e->getMessage());
+            session()->flash('socialment.error', $e->getMessage());
         } catch (Exception $e) {
-            Session::flash('socialment.error', 'An unknown error occurred: ' . $e->getMessage() . '. Please try again.');
+            session()->flash('socialment.error', 'An unknown error occurred: ' . $e->getMessage() . '. Please try again.');
         }
 
         return redirect()->to($this->getRedirectUrl());

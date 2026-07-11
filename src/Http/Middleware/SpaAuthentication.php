@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ChrisReedIO\Socialment\Http\Middleware;
 
 use Closure;
@@ -7,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 
 class SpaAuthentication
 {
@@ -18,7 +19,7 @@ class SpaAuthentication
      */
     public function handle(Request $request, Closure $next, ?string $guard = 'spa'): Response | RedirectResponse | JsonResponse
     {
-        if (! Auth::guard($guard)->check()) {
+        if (! auth($guard)->check()) {
             return response()->json(['message' => 'Not logged in'], 401);
         }
 

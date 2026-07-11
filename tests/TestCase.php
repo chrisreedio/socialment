@@ -52,9 +52,12 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_socialment_table.php.stub';
-        $migration->up();
-        */
+        // $migration = include __DIR__.'/../database/migrations/create_socialment_table.php';
+        // $migration->up();
+    }
+
+    protected function defineDatabaseMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
     }
 }
