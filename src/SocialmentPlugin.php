@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ChrisReedIO\Socialment;
 
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
@@ -8,11 +10,8 @@ use Filament\Contracts\Plugin;
 use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
-
-use function array_merge;
-use function config;
 
 class SocialmentPlugin implements Plugin
 {
@@ -60,9 +59,9 @@ class SocialmentPlugin implements Plugin
     public function register(Panel $panel): void
     {
         $panel->renderHook('panels::auth.login.form.before', function () {
-            $errorMessage = Session::get('socialment.error');
+            $errorMessage = session()->get('socialment.error');
 
-            if (! $this->evaluate($this->visible) || ! $errorMessage) {
+            if (! $errorMessage || ! $this->evaluate($this->visible)) {
                 return '';
             }
 
@@ -101,7 +100,7 @@ class SocialmentPlugin implements Plugin
     {
         $plugin = app(static::class);
 
-        $plugin->visible = fn () => true;
+        $plugin->visible = static fn () => true;
 
         return $plugin;
     }
@@ -123,7 +122,7 @@ class SocialmentPlugin implements Plugin
 
     public function userModel(string | Closure $model): static
     {
-        config()->set('socialment.models.user', (($model instanceof Closure) ? $model() : $model));
+        config()->set('socialment.models.user', value($model));
 
         return $this;
     }
@@ -199,7 +198,7 @@ class SocialmentPlugin implements Plugin
         // dd('Count of global hooks: ' . count(self::$loginHooks))
 
         foreach ($this->preLoginCallbacks as $callback) {
-            ($callback)($account);
+            value($callback, $account);
         }
     }
 
@@ -220,35 +219,36 @@ class SocialmentPlugin implements Plugin
     public function executePostLogin(ConnectedAccount $account): void
     {
         foreach ($this->postLoginCallbacks as $callback) {
-            ($callback)($account);
+            value($callback, $account);
         }
     }
 
     // New Standard trying to match Filament proper
-    public function createUserUsing(Closure $closure): static
+    public function createUserUsing(?Closure $closure): static
     {
         $this->createUserClosure = $closure;
 
         return $this;
     }
 
-    public function createUser(ConnectedAccount $account)
+    public function createUser(ConnectedAccount $account): null | Closure | Model
     {
         // If the closure is set, use it to create the user
         if ($this->createUserClosure !== null) {
-            return ($this->createUserClosure)($account);
+            return value($this->createUserClosure, $account);
         }
 
         // Otherwise, use the default method - Get the user model from the config
+        /** @var class-string<Model> $userModel */
         $userModel = config('socialment.models.user');
 
         // Check for an existing user with this email
         // Create a new user if one doesn't exist
-        return $userModel::where('email', $account->email)->first()
-            ?? $userModel::create([
-                'name' => $account->name,
-                'email' => $account->email,
-            ]);
+        return $userModel::firstOrCreate([
+            'email' => $account->email,
+        ], [
+            'name' => $account->name,
+        ]);
     }
 
     public function registerProvider(string $provider, string $icon, string $label, array $scopes = []): static
@@ -272,10 +272,6 @@ class SocialmentPlugin implements Plugin
     public function isMultiPanel(): bool
     {
         // 'Guess' what setting this should be if it's not explicitly set.
-        if ($this->multiPanel === null) {
-            return count(Filament::getPanels()) > 1;
-        }
-
-        return $this->multiPanel;
+        return $this->multiPanel ?? (count(Filament::getPanels()) > 1);
     }
 }

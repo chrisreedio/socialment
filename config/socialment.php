@@ -1,20 +1,17 @@
 <?php
 
 // config for ChrisReedIO/Socialment
-
 return [
     // The list of providers to display on the login page
     // You must install the appropriate Socialite provider package for each provider you want to use
     // if it isn't one supported by the core Laravel Socialite package.
-
-    // DEPRECATED: This will be removed in a future version.
-    // Configure providers via the panel provider.
     'providers' => [
-        // Use the key based on the provider's documentation
-        // 'azure' => [
-        // 	'icon' => 'fab-microsoft', // Font Awesome icon class
-        // 	'label' => 'Azure Active Directory', // The label to display for the provider
-        // ]
+        'google' => [
+            'icon' => 'bi-google',
+            'label' => 'Google',
+            'color' => 'danger',
+            'size' => 'md',
+        ],
     ],
 
     'view' => [
@@ -24,9 +21,8 @@ return [
         'providers-list' => 'socialment::providers-list',
     ],
 
-    // DEPRECATED: This will be removed in a future version.
-    // Configure routes via the panel provider.
     'routes' => [
+        // The route to redirect to after a successful login
         'home' => 'filament.admin.pages.dashboard',
     ],
 
@@ -41,7 +37,6 @@ return [
 
     'models' => [
         // If you want to use a custom user model, you can specify it here.
-        'user' => '\App\Models\User',
+        'user' => env('SOCIALMENT_USER_MODEL', \App\Models\User::class),
     ],
-
 ];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ChrisReedIO\Socialment;
 
 use ChrisReedIO\Socialment\Testing\TestsSocialment;
@@ -39,7 +41,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
         $configFileName = $package->shortName();
 
-        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
+        if (file_exists($package->basePath("/../config/$configFileName.php"))) {
             $package->hasConfigFile();
         }
 
@@ -63,9 +65,9 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        Route::macro('spaAuth', function (string $prefix = 'spa') {
+        Route::macro('spaAuth', static function (string $prefix = 'spa'): void {
             $namePrefix = 'socialment.spa.';
-            $namePrefix .= ($prefix === 'spa') ? 'default.' : "{$prefix}.";
+            $namePrefix .= ($prefix === 'spa') ? 'default.' : "$prefix.";
 
             Route::middleware('web')
                 ->prefix($prefix)
@@ -75,7 +77,7 @@ class SocialmentServiceProvider extends PackageServiceProvider
             // Now add this to the cors paths
             config([
                 'cors.paths' => array_merge(config('cors.paths'), [
-                    "{$prefix}/*",
+                    "$prefix/*",
                 ]),
             ]);
 

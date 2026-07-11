@@ -12,3 +12,7 @@ phpstan.neon
 testbench.yaml
 vendor
 /.phpunit.cache
+.fleet
+.env
+Writerside
+.github/workflows/build-docs.yml

@@ -62,15 +62,17 @@ php artisan socialment:install
 Additionally, edit your panel's `tailwind.config.js` content section to include the last line of the following:
 
 ```js
+{
     content: [
-    "./app/Filament/**/*.php",
-    "./resources/views/filament/**/*.blade.php",
-    "./vendor/filament/**/*.blade.php",
-    // ... Other Content Paths
+        "./app/Filament/**/*.php",
+        "./resources/views/filament/**/*.blade.php",
+        "./vendor/filament/**/*.blade.php",
+        // ... Other Content Paths
 
-    // Ensure the line below is listed!!!
-    "./vendor/chrisreedio/socialment/resources/**/*.blade.php",
-],
+        // Ensure the line below is listed!!!
+        "./vendor/chrisreedio/socialment/resources/**/*.blade.php",
+    ]
+}
 ```
 
 If this step is forgotten, the styling of the plugin will not be applied.
@@ -83,10 +85,10 @@ Include this plugin in your panel configuration:
 
 ```php
 $panel
-	->plugins([
-		// ... Other Plugins
-        \ChrisReedIO\Socialment\SocialmentPlugin::make(),        
-	])
+    ->plugins([
+        // ... Other Plugins
+        \ChrisReedIO\Socialment\SocialmentPlugin::make(),
+    ])
 ```
 
 #### Provider Configuration
@@ -164,11 +166,11 @@ Then you would configure your `config/services.php` file to include the Azure pr
 
 ```php
 'azure' => [    
-  'client_id' => env('AZURE_CLIENT_ID'),
-  'client_secret' => env('AZURE_CLIENT_SECRET'),
-  'redirect' => env('AZURE_REDIRECT_URI'),
-  'tenant' => env('AZURE_TENANT_ID'),
-  'proxy' => env('PROXY')  // optionally
+    'client_id' => env('AZURE_CLIENT_ID'),
+    'client_secret' => env('AZURE_CLIENT_SECRET'),
+    'redirect' => env('AZURE_REDIRECT_URI'),
+    'tenant' => env('AZURE_TENANT_ID'),
+    'proxy' => env('PROXY')  // optionally
 ],
 ```
 
@@ -225,7 +227,6 @@ You may publish and customize the views using
 
 ```bash
 php artisan vendor:publish --tag="socialment-views"
-
 ```
 
 #### Login Callbacks
@@ -306,18 +307,27 @@ return [
         'home' => 'filament.admin.pages.dashboard',
     ],
     
-    'models' => [
-        // If you want to use a custom user model, you can specify it here.
-        'user' => \App\Models\User::class,
-    ],
-    
     // DEPRECATED: This will be removed in a future version.
     // Configure providers via the panel provider.
     'providers' => [
         'azure' => [
             'icon' => 'fab-microsoft',
             'label' => 'Azure Active Directory',
-        ]
+        ],
+    ],
+    
+    'spa' => [
+        // The URL to redirect to after a successful login
+        'home' => env('SPA_URL', 'http://localhost:3000'),
+        'responses' => [
+            // Replace with your own JsonResource class if you want to customize the response
+            // 'me' => \ChrisReedIO\Socialment\Http\Resources\UserResponse::class,
+        ],
+    ],
+
+    'models' => [
+        // If you want to use a custom user model, you can specify it here.
+        'user' => env('SOCIALMENT_USER_MODEL', \App\Models\User::class),
     ],
 ];
 ```
@@ -365,16 +375,16 @@ You'll need to modify the `config/cors.php` file.
 You'll need to add the following to the `paths` array:
 
 ```php
-    'paths' => [
-        // ... Other Paths
-        'spa/*', // OR use the custom prefix you set in the routes/web file.
-    ],
+'paths' => [
+    // ... Other Paths
+    'spa/*', // OR use the custom prefix you set in the routes/web file.
+],
 ```
 
 Also ensure that the `supports_credentials` is set to `true`:
 
 ```php
-    'supports_credentials' => true,
+'supports_credentials' => true,
 ```
 
 ### Environment Variables
