@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Points socialment-demo's vendor/chrisreedio/socialment at this checkout so
+# package changes show up in the demo without reinstalling. Rerun after any
+# composer install or update in the demo.
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+demo_dir="$repo_root/../repos/socialment-demo"
+target="$demo_dir/vendor/chrisreedio/socialment"
+
+if [[ "$(readlink "$target" 2>/dev/null)" != "$repo_root" ]]; then
+  rm -rf -- "$target"
+  ln -s -- "$repo_root" "$target"
+  echo "Linked $target -> $repo_root"
+fi
+cd "$demo_dir"
+composer dump-autoload --quiet

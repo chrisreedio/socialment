@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# Prepares an Amp orb: PHP toolchain, this package's dependencies, and the
+# socialment-demo app (../repos/socialment-demo) linked to this checkout.
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+demo_dir="$repo_root/../repos/socialment-demo"
+cd "$repo_root"
+
+step() {
+  local label="$1"
+  shift
+  local start=$SECONDS
+  echo "==> $label"
+  "$@"
+  echo "<== $label ($((SECONDS - start))s)"
+}
+
+install_system_packages() {
+  local packages=(
+    php8.4-cli php8.4-mbstring php8.4-xml php8.4-curl php8.4-zip php8.4-sqlite3
+    php8.4-intl php8.4-bcmath php8.4-gd composer unzip sqlite3
+  )
+  local missing=()
+  for package in "${packages[@]}"; do
+    dpkg-query -W -f='${Status}' "$package" 2>/dev/null | grep -q 'ok installed' || missing+=("$package")
+  done
+  if ((${#missing[@]} == 0)); then
+    echo "All system packages present"
+    return
+  fi
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends "${missing[@]}"
+}
+
+install_package_dependencies() {
+  # composer.lock is gitignored here; reuse a restored one while it matches composer.json.
+  if [[ -f composer.lock ]] && composer validate --no-check-publish --no-check-all --quiet 2>/dev/null; then
+    composer install --no-interaction --prefer-dist --no-progress
+  else
+    composer update --no-interaction --prefer-dist --no-progress
+  fi
+}
+
+setup_demo() {
+  if [[ ! -d "$demo_dir/.git" ]]; then
+    echo "socialment-demo not found at $demo_dir; skipping demo setup"
+    return
+  fi
+  cd "$demo_dir"
+  [[ -f .env ]] || cp -- .env.example .env
+  composer install --no-interaction --prefer-dist --no-progress
+  "$repo_root/.agents/link-demo"
+  grep -q '^APP_KEY=base64:' .env || php artisan key:generate --no-interaction
+  [[ -f database/database.sqlite ]] || touch database/database.sqlite
+  php artisan migrate --force --seed --no-interaction
+  npm ci --no-audit --no-fund
+  npm run build
+  cd "$repo_root"
+}
+
+write_agent_guidance() {
+  local guide="$HOME/.config/amp/AGENTS.md"
+  local marker="<!-- socialment orb guidance -->"
+  mkdir -p "$(dirname "$guide")"
+  grep -Fqx "$marker" "$guide" 2>/dev/null && return
+  cat >> "$guide" <<EOF
+
+$marker
+# Socialment orb
+
+- PHP 8.4 and Composer come from Debian packages. Package tests: \`vendor/bin/pest\`; static analysis: \`vendor/bin/phpstan\`.
+- The demo app lives in \`$demo_dir\` (Laravel 13, Filament 5). Its \`vendor/chrisreedio/socialment\` is a symlink to this checkout, so PHP and Blade changes here show up in the demo immediately.
+- Any \`composer install\`/\`update\` in the demo replaces the symlink; run \`.agents/link-demo\` afterwards. Do not commit the link: the demo's committed composer.json uses the Packagist release.
+- Run the demo with \`amp orb services ensure\` (services \`demo\` and \`demo-assets\`, which rebuilds the Filament theme on change). Sign in at /admin as test@example.com / password.
+EOF
+}
+
+step "System packages" install_system_packages
+step "Package dependencies" install_package_dependencies
+step "Demo app" setup_demo
+step "Agent guidance" write_agent_guidance
