@@ -40,7 +40,7 @@ Bring up-to-date and simple Socialite support to your Filament admin panel with 
 
 🎮 **Demo Project:** [ChrisReedIO/Socialment-Demo](https://github.com/chrisreedio/socialment-demo)
 
-*Not yet updated to v4.*
+*Runs Socialment v5 on Laravel 13 and Filament 5.*
 
 ![Login Screen Preview](https://github.com/chrisreedio/socialment/assets/77644584/c07c6518-df0b-4143-8826-efa3cbdaa681)
 
