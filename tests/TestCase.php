@@ -16,6 +16,7 @@ use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use OwenVoke\BladeFontAwesome\BladeFontAwesomeServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -33,6 +34,7 @@ class TestCase extends Orchestra
         return [
             ActionsServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
+            BladeFontAwesomeServiceProvider::class,
             BladeIconsServiceProvider::class,
             FilamentServiceProvider::class,
             FormsServiceProvider::class,
