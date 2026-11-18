@@ -2,12 +2,17 @@
 
 namespace ChrisReedIO\Socialment;
 
+use BackedEnum;
+use BladeUI\Icons\Exceptions\SvgNotFound;
+use BladeUI\Icons\Factory as IconFactory;
 use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use Closure;
 use Filament\Contracts\Plugin;
 use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
+use Filament\Support\Enums\Size;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
@@ -81,7 +86,10 @@ class SocialmentPlugin implements Plugin
             return View::make(
                 config('socialment.view.providers-list', 'socialment::providers-list'),
                 [
-                    'providers' => $this->providers,
+                    'providers' => array_map(
+                        fn (array $provider): array => [...$provider, 'icon' => static::resolveIcon($provider['icon'] ?? null)],
+                        $this->providers,
+                    ),
                     'multiPanel' => $this->isMultiPanel(),
                     'panel' => $this->panel,
                 ]
@@ -241,15 +249,47 @@ class SocialmentPlugin implements Plugin
             ]);
     }
 
-    public function registerProvider(string $provider, string $icon, string $label, array $scopes = []): static
-    {
+    /**
+     * @param  string | BackedEnum | Htmlable | null  $icon  Any icon Filament can render: a Blade icon name (e.g. `heroicon-o-key`, or `fab-github` with blade-fontawesome installed), a `Heroicon` enum case, or HTML.
+     * @param  string | array<int | string, string | int> | null  $color  A Filament color name such as `primary` or `danger`. Defaults to `gray`.
+     * @param  string | Size | null  $size  A Filament button size. Defaults to `md`.
+     */
+    public function registerProvider(
+        string $provider,
+        string | BackedEnum | Htmlable | null $icon,
+        string $label,
+        array $scopes = [],
+        string | array | null $color = null,
+        string | Size | null $size = null,
+    ): static {
         $this->providers[$provider] = [
             'icon' => $icon,
             'label' => $label,
             'scopes' => $scopes,
+            'color' => $color,
+            'size' => $size,
         ];
 
         return $this;
+    }
+
+    /**
+     * Returns the icon if it can be rendered, or null when it names an icon from a Blade icon set that is not installed,
+     * such as a Font Awesome icon without owenvoke/blade-fontawesome. Other icons are returned unchanged.
+     */
+    protected static function resolveIcon(string | BackedEnum | Htmlable | null $icon): string | BackedEnum | Htmlable | null
+    {
+        if (! is_string($icon) || blank($icon) || str_contains($icon, '/')) {
+            return $icon;
+        }
+
+        try {
+            app(IconFactory::class)->svg($icon);
+        } catch (SvgNotFound) {
+            return null;
+        }
+
+        return $icon;
     }
 
     public function multiPanel(bool $multiPanel = true): static
