@@ -8,17 +8,14 @@ use ChrisReedIO\Socialment\Models\ConnectedAccount;
 use ChrisReedIO\Socialment\SocialmentPlugin;
 use Exception;
 use Filament\Facades\Filament;
-use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use JetBrains\PhpStorm\Deprecated;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\InvalidStateException;
-use SocialiteProviders\Manager\OAuth2\User;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Illuminate\Http\RedirectResponse;
 
 use function redirect;
 use function request;
@@ -51,41 +48,22 @@ class SocialmentController extends BaseController
         return $this->getProviderRedirect($provider);
     }
 
-    private function getProviderRedirect(string $providerName): \Illuminate\Http\RedirectResponse
+    private function getProviderRedirect(string $providerName): RedirectResponse
     {
-        $providerConfig = $this->getProviderConfig($providerName);
-
         /** @var AbstractProvider $provider */
         $provider = Socialite::driver($providerName);
+        $providerConfig = App::make(SocialmentPlugin::class)->getProvider($providerName);
         if (! empty($providerConfig['scopes'])) {
             $provider->scopes($providerConfig['scopes']);
         }
 
-        return $provider->redirect();
-    }
-
-    /**
-     * Resolve the configuration for a registered provider.
-     *
-     * Unknown providers (e.g. someone hitting /login/foo) are a missing
-     * resource, not a server error, so abort with a 404 instead of letting
-     * Socialite throw and surface as a 500.
-     *
-     * @return array<string, mixed>
-     */
-    private function getProviderConfig(string $providerName): array
-    {
-        $providers = App::make(SocialmentPlugin::class)->getProviders();
-
-        abort_unless(array_key_exists($providerName, $providers), 404);
-
-        return $providers[$providerName];
+        return redirect()->away($provider->redirect()->getTargetUrl());
     }
 
     public function callback(string $provider): RedirectResponse
     {
         try {
-            /** @var User $socialUser */
+            /** @var \SocialiteProviders\Manager\OAuth2\User $socialUser */
             $socialUser = Socialite::driver($provider)->user();
 
             $tokenExpiration = match ($provider) {
@@ -138,13 +116,12 @@ class SocialmentController extends BaseController
             Socialment::executePostLogin($connectedAccount);
         } catch (InvalidStateException $e) {
             Session::flash('socialment.error', 'Something went wrong. Please try again.');
-        } catch (ClientException $e) {
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
             Session::flash('socialment.error', 'We had a problem contacting the authentication server. Please try again.');
         } catch (AbortedLoginException $e) {
             Session::flash('socialment.error', $e->getMessage());
         } catch (Exception $e) {
-            Log::error('Socialment callback error', ['exception' => $e]);
-            Session::flash('socialment.error', 'An error occurred during sign-in. Please try again.');
+            Session::flash('socialment.error', 'An unknown error occurred: ' . $e->getMessage() . '. Please try again.');
         }
 
         return redirect()->to($this->getRedirectUrl());
