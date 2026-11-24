@@ -1,0 +1,65 @@
+name: coverage
+
+on:
+  push:
+    branches: [3.x, 4.x, 5.x]
+  pull_request:
+    branches: [3.x, 4.x, 5.x]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    name: Code coverage
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          coverage: pcov
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v4
+
+      - name: Run tests with coverage
+        run: |
+          set -o pipefail
+          vendor/bin/pest --ci --coverage --colors=never | tee build-output.txt
+
+      - name: Write coverage summary
+        if: always()
+        run: |
+          {
+            echo '## Code coverage'
+            echo
+            echo 'Uncovered line ranges are listed next to each file.'
+            echo
+            echo '```'
+            sed -n '/Random Order Seed/,$p' build-output.txt | tail -n +2 | sed '/^[[:space:]]*$/d'
+            echo '```'
+          } > coverage-summary.md
+          cat coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment coverage on pull request
+        if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: coverage
+          path: coverage-summary.md
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: |
+            build/coverage
+            build/logs/clover.xml
