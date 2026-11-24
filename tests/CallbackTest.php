@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\Request as PsrRequest;
 use GuzzleHttp\Psr7\Response as PsrResponse;
 use Illuminate\Support\Carbon;
 use Laravel\Socialite\Contracts\Factory as SocialiteFactory;
+use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Two\User as SocialiteUser;
 
@@ -42,7 +43,7 @@ function fakeSocialiteCallback(string $provider, SocialiteUser | Throwable $resu
     $socialite = Mockery::mock(SocialiteFactory::class);
     $socialite->shouldReceive('driver')->with($provider)->andReturn($driver);
 
-    app()->instance(SocialiteFactory::class, $socialite);
+    Socialite::swap($socialite);
 }
 
 function callback(string $provider = 'github')
@@ -96,6 +97,17 @@ it('updates the connected account of a returning user instead of creating anothe
     expect(ConnectedAccount::count())->toBe(1)
         ->and($account->fresh()->only('name', 'token'))->toBe(['name' => 'Ada King', 'token' => 'new-token'])
         ->and(auth()->id())->toBe($user->id);
+});
+
+it('keeps one connected account per provider for the same user', function () {
+    fakeSocialiteCallback('github', socialiteUser());
+    callback();
+    fakeSocialiteCallback('azure', socialiteUser(['id' => 'azure-456']));
+    callback('azure');
+
+    $user = User::sole();
+    expect($user->connectedAccounts)->toHaveCount(2)
+        ->and($user->connectedAccounts()->provider('azure')->sole()->provider_user_id)->toBe('azure-456');
 });
 
 it('stores the token expiry for azure logins', function () {

@@ -1,6 +1,7 @@
 <?php
 
 use ChrisReedIO\Socialment\SocialmentPlugin;
+use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\PanelRegistry;
 use Filament\Support\Facades\FilamentView;
@@ -67,6 +68,15 @@ it('sets the user model from a string or closure', function () {
     (new SocialmentPlugin)->userModel(fn () => 'App\Models\Member');
 
     expect(config('socialment.models.user'))->toBe('App\Models\Member');
+});
+
+it('returns the plugin registered on the current panel', function () {
+    $plugin = SocialmentPlugin::make();
+    $panel = Panel::make()->id('admin')->path('admin')->plugin($plugin);
+    app(PanelRegistry::class)->register($panel);
+    Filament::setCurrentPanel($panel);
+
+    expect(SocialmentPlugin::get())->toBe($plugin);
 });
 
 it('looks up a registered provider by name', function () {
