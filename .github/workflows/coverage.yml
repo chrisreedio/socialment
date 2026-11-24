@@ -44,7 +44,7 @@ jobs:
             echo 'Uncovered line ranges are listed next to each file.'
             echo
             echo '```'
-            sed -n '/Random Order Seed/,$p' build-output.txt | tail -n +2 | sed '/^[[:space:]]*$/d'
+            sed -n '/Random Order Seed/,$p' build-output.txt | tail -n +2 | sed -E 's/\x1b\[[0-9;]*[A-Za-z]//g; /^[[:space:]]*$/d; /Parallel: [0-9]+ processes/d'
             echo '```'
           } > coverage-summary.md
           cat coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
