@@ -5,6 +5,41 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v5.2.0 - 2026-11-24
+
+### Upgrade notes
+
+Provider login buttons now render with Filament's `<x-filament::button>`, so they follow your panel's theme, colors and dark mode (#33).
+
+**Font Awesome is no longer installed for you.** `owenvoke/blade-fontawesome` moved from `require` to `suggest`. If your providers use Font Awesome icon names such as `fab-github`, add it to your app:
+
+    composer require owenvoke/blade-fontawesome
+    
+- Without it, the default view renders the buttons without icons. It does not throw an error.
+- If you **published** the `providers-list` or `login-error` views from an earlier version, those views call Font Awesome icons directly and will throw `SvgNotFound` until you install the package or republish the views.
+
+### New
+
+- `registerProvider()` accepts any icon a Filament button accepts: a Blade Icons name (`heroicon-o-key`, `fab-github`, …), a `Heroicon` enum case, or `null`.
+  
+- `registerProvider()` takes optional `color` (default `gray`) and `size` (default `md`) arguments:
+  
+      ->registerProvider('azure', Heroicon::OutlinedKey, 'Azure', color: 'primary')
+      
+  Existing calls with 4 arguments keep working.
+  
+
+### What's Changed
+
+* Add Amp orb setup and update demo note by @chrisreedio in https://github.com/chrisreedio/socialment/pull/101
+* Use Filament buttons for provider logins; make Font Awesome optional by @chrisreedio in https://github.com/chrisreedio/socialment/pull/102
+* Add code coverage reporting to GitHub Actions by @chrisreedio in https://github.com/chrisreedio/socialment/pull/103
+* Raise test coverage from 38% to 94% by @chrisreedio in https://github.com/chrisreedio/socialment/pull/104
+* Parallel tests, 95.5% coverage, and a README coverage badge by @chrisreedio in https://github.com/chrisreedio/socialment/pull/105
+* Update the changelog on the release's target branch by @chrisreedio in https://github.com/chrisreedio/socialment/pull/106
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v5.1.1...v5.2.0
+
 ## v3.10.1 - 2025-04-21
 
 ### What's Changed
