@@ -5,6 +5,24 @@ All notable changes to `socialment` will be documented in this file.
 > [!NOTE]
 Due to an issue in the workflow that generates this changelog, the first two entries were manually added.
 
+## v5.2.1 - 2026-11-24
+
+### Fixed
+
+- `SocialmentPlugin::globalPreLogin()` and `globalPostLogin()` now run. Before, they stored callbacks that were never called. Global hooks run before each panel's own `preLogin()` / `postLogin()` hooks, and a global pre-login hook can abort the login by throwing `AbortedLoginException`.
+
+### Internal
+
+- Removed unused service provider code (translations and stub publishing for directories with no files, `getCommands()`, `getScriptData()`). Test coverage is now 100%.
+
+### What's Changed
+
+* Backfill CHANGELOG with v4.0.0-beta.1 through v5.1.1 by @chrisreedio in https://github.com/chrisreedio/socialment/pull/107
+* Run global login hooks; remove dead code for 100% coverage by @chrisreedio in https://github.com/chrisreedio/socialment/pull/109
+* Install pcov in the Amp orb setup by @chrisreedio in https://github.com/chrisreedio/socialment/pull/110
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v5.2.0...v5.2.1
+
 ## v5.2.0 - 2026-11-24
 
 ### Upgrade notes
