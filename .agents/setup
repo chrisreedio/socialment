@@ -19,7 +19,7 @@ step() {
 install_system_packages() {
   local packages=(
     php8.4-cli php8.4-mbstring php8.4-xml php8.4-curl php8.4-zip php8.4-sqlite3
-    php8.4-intl php8.4-bcmath php8.4-gd composer unzip sqlite3
+    php8.4-intl php8.4-bcmath php8.4-gd php8.4-pcov composer unzip sqlite3
   )
   local missing=()
   for package in "${packages[@]}"; do
@@ -69,7 +69,7 @@ write_agent_guidance() {
 $marker
 # Socialment orb
 
-- PHP 8.4 and Composer come from Debian packages. Package tests: \`vendor/bin/pest\`; static analysis: \`vendor/bin/phpstan\`.
+- PHP 8.4 and Composer come from Debian packages. Package tests: \`vendor/bin/pest\` (with coverage via pcov: \`vendor/bin/pest --coverage\`); static analysis: \`vendor/bin/phpstan\`.
 - The demo app lives in \`$demo_dir\` (Laravel 13, Filament 5). Its \`vendor/chrisreedio/socialment\` is a symlink to this checkout, so PHP and Blade changes here show up in the demo immediately.
 - Any \`composer install\`/\`update\` in the demo replaces the symlink; run \`.agents/link-demo\` afterwards. Do not commit the link: the demo's committed composer.json uses the Packagist release.
 - Run the demo with \`amp orb services ensure\` (services \`demo\` and \`demo-assets\`, which rebuilds the Filament theme on change). Sign in at /admin as test@example.com / password.
