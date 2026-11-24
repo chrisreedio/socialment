@@ -6,7 +6,6 @@ use ChrisReedIO\Socialment\Testing\TestsSocialment;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Route;
 use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -27,7 +26,6 @@ class SocialmentServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
-            // ->hasCommands($this->getCommands())
             ->hasRoute('web')
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
@@ -45,10 +43,6 @@ class SocialmentServiceProvider extends PackageServiceProvider
 
         if (file_exists($package->basePath('/../database/migrations'))) {
             $package->hasMigrations($this->getMigrations());
-        }
-
-        if (file_exists($package->basePath('/../resources/lang'))) {
-            $package->hasTranslations();
         }
 
         if (file_exists($package->basePath('/../resources/views'))) {
@@ -91,22 +85,8 @@ class SocialmentServiceProvider extends PackageServiceProvider
             $this->getAssetPackageName()
         );
 
-        // FilamentAsset::registerScriptData(
-        //     $this->getScriptData(),
-        //     $this->getAssetPackageName()
-        // );
-
         // Icon Registration
         FilamentIcon::register($this->getIcons());
-
-        // Handle Stubs
-        if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
-                $this->publishes([
-                    $file->getRealPath() => base_path("stubs/socialment/{$file->getFilename()}"),
-                ], 'socialment-stubs');
-            }
-        }
 
         // Testing
         Testable::mixin(new TestsSocialment);
@@ -130,33 +110,9 @@ class SocialmentServiceProvider extends PackageServiceProvider
     }
 
     /**
-     * @return array<class-string>
-     */
-    protected function getCommands(): array
-    {
-        return [];
-    }
-
-    /**
      * @return array<string>
      */
     protected function getIcons(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string>
-     */
-    // protected function getRoutes(): array
-    // {
-    //     return [];
-    // }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getScriptData(): array
     {
         return [];
     }
