@@ -40,6 +40,69 @@ Provider login buttons now render with Filament's `<x-filament::button>`, so the
 
 **Full Changelog**: https://github.com/chrisreedio/socialment/compare/v5.1.1...v5.2.0
 
+## v5.1.1 - 2026-07-08
+
+### What's Changed
+
+* Remove outdated warning by @ziming in https://github.com/chrisreedio/socialment/pull/93
+* build(deps): bump actions/checkout from 6 to 7 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/99
+* fix: return 404 for unregistered providers instead of 500 by @zupolgec in https://github.com/chrisreedio/socialment/pull/94
+
+### New Contributors
+
+* @ziming made their first contribution in https://github.com/chrisreedio/socialment/pull/93
+* @zupolgec made their first contribution in https://github.com/chrisreedio/socialment/pull/94
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v5.1.0...v5.1.1
+
+## v5.1.0 - 2026-06-10
+
+### What's Changed
+
+##### Laravel 13 Support
+
+* build(deps): bump dependabot/fetch-metadata from 2.5.0 to 3.1.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/95
+* build(deps): bump ramsey/composer-install from 3 to 4 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/96
+* build(deps): bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/97
+* update font awesome to support laravel 13 by @atmonshi in https://github.com/chrisreedio/socialment/pull/91
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v5.0.1...v5.1.0
+
+## v5.0.1 - 2026-06-01
+
+### What's Changed
+
+* build(deps): bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/75
+* build(deps): bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/77
+* chore(deps): update PHP and package versions in composer.json by @chrisreedio in https://github.com/chrisreedio/socialment/pull/80
+* build(deps): bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/83
+* build(deps): bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/85
+* Bugfix/security-01 by @chrisreedio in https://github.com/chrisreedio/socialment/pull/92
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.10.1...v5.0.1
+
+## v5.0.0-beta.1 - 2026-02-09
+
+### Filament v5 Support
+
+#### What's Changed
+
+* build(deps): bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/83
+* build(deps): bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/85
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v4.0.0-beta.1...v5.0.0-beta.1
+
+## v4.0.0-beta.1 - 2025-08-20
+
+### What's Changed
+
+* Laravel 12 + FilamentPHP 4 support!
+* build(deps): bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/75
+* build(deps): bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/chrisreedio/socialment/pull/77
+* chore(deps): update PHP and package versions in composer.json by @chrisreedio in https://github.com/chrisreedio/socialment/pull/80
+
+**Full Changelog**: https://github.com/chrisreedio/socialment/compare/v3.10.1...v4.0.0-beta.1
+
 ## v3.10.1 - 2025-04-21
 
 ### What's Changed
