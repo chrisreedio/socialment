@@ -159,17 +159,24 @@ protected $listen = [
 Add providers to your panel configuration:
 
 ```php
+use Filament\Support\Icons\Heroicon;
+
 $panel->plugins([
     \ChrisReedIO\Socialment\SocialmentPlugin::make()
         ->registerProvider('github', 'fab-github', 'GitHub')
-        ->registerProvider('azure', 'fab-microsoft', 'Azure Active Directory'),
+        ->registerProvider('azure', Heroicon::OutlinedKey, 'Azure Active Directory', color: 'primary'),
 ]);
 ```
 
 **Parameters:**
-- `provider_name` - Matches your `config/services.php` key
-- `icon` - Font Awesome brand icon ([search icons](https://fontawesome.com/search?o=r&f=brands))
+- `provider` - Matches your `config/services.php` key
+- `icon` - Any icon a Filament button accepts: a [Blade Icons](https://github.com/blade-ui-kit/blade-icons) name such as `heroicon-o-key` or `fab-github`, a `Heroicon` enum case, or `null` for no icon. See [Icons](#icons).
 - `label` - Display name for the button
+- `scopes` - (optional) Extra OAuth scopes to request
+- `color` - (optional) A [Filament color](https://filamentphp.com/docs/5.x/styling/colors) such as `primary` or `danger`. Defaults to `gray`.
+- `size` - (optional) A Filament button size: `xs`, `sm`, `md`, `lg` or `xl`. Defaults to `md`.
+
+Each provider renders as a Filament button (`<x-filament::button>`), so it follows your panel's theme, colors and dark mode.
 
 ### OAuth Redirect URLs
 
@@ -306,11 +313,18 @@ php artisan vendor:publish --tag="socialment-views"
 
 Views will be copied to `resources/views/vendor/socialment/`.
 
-### Font Awesome Icons
+### Icons
 
-This package uses [Blade Font Awesome](https://github.com/owenvoke/blade-fontawesome) by [Owen Voke](https://github.com/owenvoke).
+Provider icons are passed to the Filament button's `icon` prop, so you can use any icon set installed through [Blade Icons](https://github.com/blade-ui-kit/blade-icons). [Heroicons](https://heroicons.com) ship with Filament.
 
-Search for brand icons on the [Font Awesome Website](https://fontawesome.com/search?o=r&f=brands).
+Heroicons don't include brand logos. For brand icons, install [Blade Font Awesome](https://github.com/owenvoke/blade-fontawesome) by [Owen Voke](https://github.com/owenvoke) and search for brand icons on the [Font Awesome website](https://fontawesome.com/search?o=r&f=brands):
+
+```bash
+composer require owenvoke/blade-fontawesome
+```
+
+> [!NOTE]
+> Socialment no longer installs Blade Font Awesome for you. If you upgrade and your providers use Font Awesome names such as `fab-github`, require `owenvoke/blade-fontawesome` in your app. If an icon's set isn't installed, the button renders without an icon instead of throwing an error.
 
 ---
 

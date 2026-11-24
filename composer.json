@@ -26,7 +26,6 @@
         "php": "^8.2",
         "filament/filament": "^5.0",
         "laravel/socialite": "^5.27",
-        "owenvoke/blade-fontawesome": "^3.2.2",
         "spatie/laravel-package-tools": "^1.93.1"
     },
     "require-dev": {
@@ -35,6 +34,7 @@
         "laravel/pint": "^1.13",
         "nunomaduro/collision": "^8.9.4",
         "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "owenvoke/blade-fontawesome": "^3.2.2",
         "pestphp/pest": "^3.8.2|^4.4.1",
         "pestphp/pest-plugin-arch": "^3.1.1|^4.0.2",
         "pestphp/pest-plugin-laravel": "^3.2|^4.1",
@@ -42,6 +42,9 @@
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "socialiteproviders/manager": "^4.9.2"
+    },
+    "suggest": {
+        "owenvoke/blade-fontawesome": "Use Font Awesome icons (such as fab-github) for provider buttons."
     },
     "autoload": {
         "psr-4": {
