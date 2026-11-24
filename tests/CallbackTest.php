@@ -147,6 +147,45 @@ it('runs pre and post login callbacks around the login', function () {
     expect($calls)->toBe([['pre', 'provider-123', false], ['post', 'provider-123', true]]);
 });
 
+it('runs global login callbacks before the plugin callbacks', function () {
+    $calls = [];
+    SocialmentPlugin::globalPreLogin(function (ConnectedAccount $account) use (&$calls) {
+        $calls[] = ['global pre', $account->provider_user_id, auth()->check()];
+    });
+    SocialmentPlugin::globalPostLogin(function (ConnectedAccount $account) use (&$calls) {
+        $calls[] = ['global post', $account->provider_user_id, auth()->check()];
+    });
+    app(SocialmentPlugin::class)
+        ->preLogin(function () use (&$calls) {
+            $calls[] = ['pre'];
+        })
+        ->postLogin(function () use (&$calls) {
+            $calls[] = ['post'];
+        });
+    fakeSocialiteCallback('github', socialiteUser());
+
+    callback();
+
+    expect($calls)->toBe([
+        ['global pre', 'provider-123', false],
+        ['pre'],
+        ['global post', 'provider-123', true],
+        ['post'],
+    ]);
+});
+
+it('lets a global pre login callback abort the login', function () {
+    SocialmentPlugin::globalPreLogin(function () {
+        throw new AbortedLoginException('Blocked globally.');
+    });
+    fakeSocialiteCallback('github', socialiteUser());
+
+    callback();
+
+    expect(auth()->check())->toBeFalse()
+        ->and(session('socialment.error'))->toBe('Blocked globally.');
+});
+
 it('lets a pre login callback abort the login with its own message', function () {
     app(SocialmentPlugin::class)->preLogin(function () {
         throw new AbortedLoginException('Admins only.');

@@ -4,6 +4,7 @@ namespace ChrisReedIO\Socialment\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use ChrisReedIO\Socialment\SocialmentPlugin;
 use ChrisReedIO\Socialment\SocialmentServiceProvider;
 use ChrisReedIO\Socialment\Tests\Fixtures\User;
 use Filament\Actions\ActionsServiceProvider;
@@ -27,6 +28,9 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
+
+        SocialmentPlugin::$globalPreLoginCallbacks = [];
+        SocialmentPlugin::$globalPostLoginCallbacks = [];
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'ChrisReedIO\\Socialment\\Database\\Factories\\' . class_basename($modelName) . 'Factory'

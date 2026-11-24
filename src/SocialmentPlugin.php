@@ -192,11 +192,11 @@ class SocialmentPlugin implements Plugin
     }
 
     /**
-     * Executes the pre login callback. Set up closure to execute via the preLogin method.
+     * Executes the global pre login callbacks (globalPreLogin), then this plugin's (preLogin).
      */
     public function executePreLogin(ConnectedAccount $account): void
     {
-        foreach ($this->preLoginCallbacks as $callback) {
+        foreach ([...self::$globalPreLoginCallbacks, ...$this->preLoginCallbacks] as $callback) {
             ($callback)($account);
         }
     }
@@ -213,11 +213,11 @@ class SocialmentPlugin implements Plugin
     }
 
     /**
-     * Executes the post login callback. Set up closure to execute via the postLogin method.
+     * Executes the global post login callbacks (globalPostLogin), then this plugin's (postLogin).
      */
     public function executePostLogin(ConnectedAccount $account): void
     {
-        foreach ($this->postLoginCallbacks as $callback) {
+        foreach ([...self::$globalPostLoginCallbacks, ...$this->postLoginCallbacks] as $callback) {
             ($callback)($account);
         }
     }

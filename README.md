@@ -243,6 +243,8 @@ public function boot(): void
 }
 ```
 
+To run a hook for every panel, register it with `SocialmentPlugin::globalPreLogin()` or `SocialmentPlugin::globalPostLogin()`. Global hooks run before the panel's own hooks.
+
 #### Pre-login Hook: External Service Access Control
 
 Use the pre-login hook to verify user access via an external service before allowing authentication:
