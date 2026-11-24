@@ -7,7 +7,8 @@ on:
     branches: [3.x, 4.x, 5.x]
 
 permissions:
-  contents: read
+  # write: the badge step pushes coverage.json to the badges branch
+  contents: write
   pull-requests: write
 
 jobs:
@@ -32,7 +33,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           set -o pipefail
-          vendor/bin/pest --ci --coverage --colors=never | tee build-output.txt
+          vendor/bin/pest --ci --coverage --parallel --colors=never | tee build-output.txt
 
       - name: Write coverage summary
         if: always()
@@ -43,7 +44,7 @@ jobs:
             echo 'Uncovered line ranges are listed next to each file.'
             echo
             echo '```'
-            sed -n '/Random Order Seed/,$p' build-output.txt | tail -n +2 | sed '/^[[:space:]]*$/d'
+            sed -n '/Random Order Seed/,$p' build-output.txt | tail -n +2 | sed -E 's/\x1b\[[0-9;]*[A-Za-z]//g; /^[[:space:]]*$/d; /Parallel: [0-9]+ processes/d'
             echo '```'
           } > coverage-summary.md
           cat coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
@@ -54,6 +55,25 @@ jobs:
         with:
           header: coverage
           path: coverage-summary.md
+
+      - name: Publish coverage badge
+        if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          percent=$(php -r '$m = simplexml_load_file("build/logs/clover.xml")->project->metrics; printf("%.1f", $m["coveredstatements"] / max(1, (int) $m["statements"]) * 100);')
+          color=$(php -r '$p = (float) $argv[1]; echo match (true) { $p >= 90 => "brightgreen", $p >= 75 => "green", $p >= 60 => "yellow", $p >= 40 => "orange", default => "red" };' "$percent")
+
+          mkdir badges && cd badges
+          git init -q
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          if git fetch -q --depth=1 origin badges; then git checkout -q -B badges FETCH_HEAD; else git checkout -q --orphan badges; fi
+
+          echo "{\"schemaVersion\":1,\"label\":\"coverage\",\"message\":\"${percent}%\",\"color\":\"${color}\"}" > coverage.json
+          git add coverage.json
+          git diff --cached --quiet && exit 0
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -qm "Coverage ${percent}%"
+          git push -q origin badges
 
       - name: Upload coverage report
         if: always()

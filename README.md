@@ -6,6 +6,7 @@
 ![Tests Action Status](https://github.com/chrisreedio/socialment/actions/workflows/run-tests.yml/badge.svg)
 ![Code Style Action Status](https://github.com/chrisreedio/socialment/actions/workflows/fix-php-code-styling.yml/badge.svg)
 ![PHPStan Action Status](https://github.com/chrisreedio/socialment/actions/workflows/phpstan.yml/badge.svg)
+[![Code Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchrisreedio%2Fsocialment%2Fbadges%2Fcoverage.json&style=flat-square)](https://github.com/chrisreedio/socialment/actions/workflows/coverage.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/chrisreedio/socialment.svg?style=flat-square)](https://packagist.org/packages/chrisreedio/socialment)
 
 ## Table of Contents
